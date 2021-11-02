@@ -26,7 +26,10 @@ appUi <- function() {
       shiny::tabPanel(
         "Start",
         shiny::mainPanel(
-          shiny::p("Startside"),
+          rapbase::renderRmd(
+            system.file("veiledning.Rmd", package = "norspis"),
+            outputType = "html_fragment"
+          ),
           rapbase::navbarWidgetInput("norspisNavbarWidget")
         )
       ),
