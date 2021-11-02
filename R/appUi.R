@@ -11,7 +11,14 @@ appUi <- function() {
   shiny::tagList(
 
     shiny::navbarPage(
-      title = shiny::div(appTitle),
+      title = shiny::div(
+        shiny::a(
+          shiny::includeHTML(
+            system.file("www/logo.svg", package = "rapbase")
+          )
+        ),
+        appTitle
+      ),
       windowTitle = appTitle,
       theme = "rap/bootstrap.css",
       id = "tabs",
