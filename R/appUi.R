@@ -34,8 +34,35 @@ appUi <- function() {
         )
       ),
 
+      shiny::tabPanel(
+        "Abonnement",
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            rapbase::autoReportInput("norspisSubscription")
+          ),
+          shiny::mainPanel(
+            rapbase::autoReportUI("norspisSubscription")
+          )
+        )
+      ),
+
       shiny::navbarMenu(
         "Verkt\u00f8y",
+
+        shiny::tabPanel(
+          "Utsending",
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              rapbase::autoReportFormatInput("norspisDispatchFormat"),
+              rapbase::autoReportOrgInput("norspisDispatchOrg"),
+              rapbase::autoReportInput("norspisDispatch")
+            ),
+            shiny::mainPanel(
+              rapbase::autoReportUI("norspisDispatch")
+            )
+          )
+        ),
+
         shiny::tabPanel(
           "Bruksstatistikk",
           shiny::sidebarLayout(
