@@ -27,7 +27,7 @@ remotes::install_github("Rapporteket/norspis")
 ## Usage
 Start the shiny application from the R console:
 ```r
-norspis::runApp()
+norspisApp()
 ```
 
 ## Issues
