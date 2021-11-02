@@ -18,6 +18,7 @@ tilbakeføres til enkeltpersoner.
 Husk:
 
 * Bruk rapportene internt
+
 * Avklar ekstern bruk med NorSpis (for eksempel ved ønske om bruk overfor media)
 
 ### Tolkning
@@ -27,6 +28,7 @@ representativitet når de man ikke har svar fra skiller seg fra de man har svar 
 Husk:
 
 * Dekningsgrad, aktualitet og forløpskompletthet ved de enkelte enhetene og nasjonalt, vil kunne påvirke hvor representative dataene er
+
 * Nasjonale tall vil vanskelig kunne være representative for andre enn pasientgruppen ved de enhetene som faktisk har registrert i NorSpis i den aktuelle tidsperioden
 
 ### Videre utvikling av Rapportekets innhold

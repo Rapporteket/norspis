@@ -23,8 +23,8 @@ appServer <- function(input, output, session) {
     Veiledning = list(
       synopsis = "Testrapport kun for illustrasjon",
       fun = "reportProcessor",
-      paramNames = c("report", "outputFormat"),
-      paramValues = c("veiledning", "pdf")
+      paramNames = c("report", "outputFormat", "title"),
+      paramValues = c("veiledning", "pdf", "Testrapport")
     )
   )
 
