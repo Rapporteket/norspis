@@ -74,7 +74,19 @@ appUi <- function() {
               rapbase::statsUI("norspisStats")
             )
           )
-        )
+        ),
+
+        shiny::tabPanel(
+          "Eksport",
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              rapbase::exportUCInput("norspisExport")
+            ),
+            shiny::mainPanel(
+              rapbase::exportGuideUI("norspisExport")
+            )
+          )
+        ),
       )
     )
   )

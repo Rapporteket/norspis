@@ -21,7 +21,7 @@ appServer <- function(input, output, session) {
   )
   report <- list(
     Veiledning = list(
-      synopsis = "Testrapport for illustrasjonsformål",
+      synopsis = "Testrapport kun for illustrasjon",
       fun = "reportProcessor",
       paramNames = c("report", "outputFormat"),
       paramValues = c("veiledning", "pdf")
@@ -49,4 +49,7 @@ appServer <- function(input, output, session) {
   # use stats
   rapbase::statsServer("norspisStats", registryName = registryName)
 
+  # export
+  rapbase::exportGuideServer("norspisExport", registryName)
+  rapbase::exportUCServer("norspisExport", registryName)
 }
