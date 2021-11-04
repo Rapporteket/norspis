@@ -13,7 +13,8 @@ appServer <- function(input, output, session) {
 
   registryName <- "norspis"
 
-  rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis")
+  rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
+                              caller = "norspis")
 
   # dummy report and orgs to subscribe and dispatch
   orgs <- list(
