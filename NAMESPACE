@@ -2,4 +2,5 @@
 
 export(appServer)
 export(appUi)
-export(runApp)
+export(norspisApp)
+export(reportProcessor)
