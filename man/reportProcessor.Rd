@@ -64,5 +64,6 @@ default value.
 \examples{
 ## Make the start page for NorSpis
 reportFilePath <- reportProcessor(report = "veiledning",
+                                  outputType = "html",
                                   title = "Example report")
 }
