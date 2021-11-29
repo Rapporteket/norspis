@@ -27,7 +27,7 @@ queryAlleScorer <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load AlleScorer data from ", registryName, ": ", query)
-    raplog::repLogger(session = list(...)[["session"]], msg)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
   rapbase::loadRegData(registryName, query)
@@ -42,7 +42,7 @@ queryBehandling <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load Behandling data from ", registryName, ": ", query)
-    raplog::repLogger(session = list(...)[["session"]], msg)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
   rapbase::loadRegData(registryName, query)
@@ -57,7 +57,7 @@ queryBehandlingNum <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load BehandlingNum data from ", registryName, ": ", query)
-    raplog::repLogger(session = list(...)[["session"]], msg)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
   rapbase::loadRegData(registryName, query)
@@ -72,7 +72,7 @@ queryEnkeltLedd <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load EnkeltLedd data from ", registryName, ": ", query)
-    raplog::repLogger(session = list(...)[["session"]], msg)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
   rapbase::loadRegData(registryName, query)
@@ -87,7 +87,7 @@ queryEnkeltLeddNum <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load EnkeltLeddNum data from ", registryName, ": ", query)
-    raplog::repLogger(session = list(...)[["session"]], msg)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
   rapbase::loadRegData(registryName, query)
@@ -102,7 +102,7 @@ queryForlopsOversikt <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load ForlopsOversikt data from ", registryName, ": ", query)
-    raplog::repLogger(session = list(...)[["session"]], msg)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
   rapbase::loadRegData(registryName, query)

@@ -58,6 +58,8 @@ Sys.setenv(R_RAP_CONFIG_PATH = tempdir())
 cf <- file(file.path(Sys.getenv("R_RAP_CONFIG_PATH"), "dbConfig.yml"))
 writeLines(test_config, cf)
 close(cf)
+file.copy(from = system.file("rapbaseConfig.yml", package = "rapbase"),
+          to = file.path(Sys.getenv("R_RAP_CONFIG_PATH"), "rapbaseConfig.yml"))
 
 # make queries for creating tables
 fc <- file(system.file("testDb.sql", package = "norspis"), "r")
@@ -66,9 +68,11 @@ close(fc)
 sql <- paste0(t, collapse = "\n")
 queries <- strsplit(sql, ";")[[1]]
 
+registryName <- "testReg"
+
 test_that("relevant test database and tables can be made", {
   check_db()
-  con <- rapbase::rapOpenDbConnection("testReg")$con
+  con <- rapbase::rapOpenDbConnection(registryName)$con
   for (i in seq_len(length(queries))) {
     expect_equal(class(RMariaDB::dbExecute(con, queries[i])), "integer")
 
@@ -77,74 +81,48 @@ test_that("relevant test database and tables can be made", {
 })
 
 # onto main testing
-test_that("hospital name can be read from db", {
+session <- list()
+attr(session, "class") <- "ShinySession"
+registryName
+## simply check if data frames are returned
+test_that("data frame is returned", {
   check_db()
-  con <- rapbase::rapOpenDbConnection("testReg")$con
-  query <- "INSERT INTO friendlycentre SET ID=1, CENTRESHORTNAME='s1';"
-  RMariaDB::dbExecute(con, query)
-  expect_equal(class(getHospitalName("testReg", 1)), "character")
-  expect_equal(getHospitalName("testReg", 1), "s1")
-  expect_warning(getHospitalName("testReg", 2))
-  rapbase::rapCloseDbConnection(con)
-})
-
-test_that("name-id mapping can be obtained", {
-  check_db()
-  con <- rapbase::rapOpenDbConnection("testReg")$con
-  expect_equal(class(getNameReshId("testReg")), "data.frame")
-  expect_equal(class(getNameReshId("testReg", asNamedList = TRUE)),
-               "list")
-  rapbase::rapCloseDbConnection(con)
-})
-
-test_that("tables can be dumped", {
-  check_db()
-  con <- rapbase::rapOpenDbConnection("testReg")$con
-  expect_equal(class(
-    getDataDump("testReg", "basereg", Sys.Date(), Sys.Date(), userRole = "SC", reshID = NULL)
-  ), "data.frame")
-  expect_equal(class(
-    getDataDump("testReg", "friendlycentre", Sys.Date(), Sys.Date(),userRole = "SC", reshID = NULL)
-  ), "data.frame")
-  expect_equal(class(
-    getDataDump("testReg", "mce", Sys.Date(), Sys.Date(), userRole = "SC", reshID = NULL)
-  ), "data.frame")
-  expect_equal(class(
-    getDataDump("testReg", "patientlist", Sys.Date(), Sys.Date(), userRole = "SC", reshID = NULL)
-  ), "data.frame")
-  expect_equal(class(
-    getDataDump("testReg", "pros", Sys.Date(), Sys.Date(), userRole = "SC", reshID = NULL)
-  ), "data.frame")
-  expect_error(
-    getDataDump("testReg", "notATable", Sys.Date(), Sys.Date(), userRole = "SC", reshID = NULL)
+  expect_true(
+    class(
+      queryAlleScorer(registryName, reshId, session = session)
+    ) == "data.frame"
   )
-  rapbase::rapCloseDbConnection(con)
+  expect_true(
+    class(
+      queryBehandling(registryName, reshId, session = session)
+    ) == "data.frame"
+  )
+  expect_true(
+    class(
+      queryBehandlingNum(registryName, reshId, session = session)
+    ) == "data.frame"
+  )
+  expect_true(
+    class(
+      queryEnkeltLedd(registryName, reshId, session = session)
+    ) == "data.frame"
+  )
+  expect_true(
+    class(
+      queryEnkeltLeddNum(registryName, reshId, session = session)
+    ) == "data.frame"
+  )
+  expect_true(
+    class(
+      queryForlopsOversikt(registryName, reshId, session = session)
+    ) == "data.frame"
+  )
 })
-
-test_that("pros patient data can be read from db", {
-  check_db()
-  expect_equal(class(getProsPatient("testReg", singleRow = FALSE,
-                                    userRole = "SC",
-                                    fromDate = NULL, toDate = NULL)),
-               "list")
-  expect_equal(class(getProsPatient("testReg", singleRow = TRUE,
-                                    userRole = "SC",
-                                    fromDate = NULL, toDate = NULL)),
-               "list")
-})
-
-test_that("rand12 data can be read from db", {
-  check_db()
-  expect_equal(class(getRand12("testReg", singleRow = FALSE, userRole = "SC")), "list")
-  expect_equal(class(getRand12("testReg", singleRow = TRUE, userRole = "SC")), "list")
-})
-
-
 
 
 # remove test db
 if (is.null(check_db(is_test_that = FALSE))) {
-  con <- rapbase::rapOpenDbConnection("testReg")$con
+  con <- rapbase::rapOpenDbConnection(registryName)$con
   RMariaDB::dbExecute(con, "DROP DATABASE testDb;")
   rapbase::rapCloseDbConnection(con)
 }
