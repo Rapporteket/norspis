@@ -14,7 +14,7 @@
 #'
 #' @name queryData
 #' @aliases queryAlleScorer queryBehandling queryBehandlingNum
-#' queryEnkeltLedd queryEnkeltLeddNum queryForlopsOversikt
+#' queryEnkeltLedd queryEnkeltLeddNum queryForlopsOversikt queryReshNames
 #' @return Data frame of registry data
 NULL
 
@@ -102,6 +102,32 @@ queryForlopsOversikt <- function(registryName, reshId, ...) {
 
   if ("session" %in% names(list(...))) {
     msg = paste0("Load ForlopsOversikt data from ", registryName, ": ", query)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
+  }
+
+  rapbase::loadRegData(registryName, query)
+}
+
+
+#' @rdname queryData
+#' @export
+queryReshNames <- function(registryName, ...) {
+
+  query <- paste0("
+SELECT
+  AvdRESH as reshId,
+  Sykehusnavn AS name,
+  SykehusKort AS shortName
+FROM
+  Brukerliste
+GROUP BY
+  AvdRESH,
+  SykehusKort,
+  Sykehusnavn
+")
+
+  if ("session" %in% names(list(...))) {
+    msg = paste0("Load dept. names for each ReshId from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
