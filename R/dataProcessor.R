@@ -21,7 +21,7 @@
 addDeptName <- function(df, id, name) {
 
   stopifnot("AvdRESH" %in% names(df))
-  stopifnot(length(code) == length(value))
+  stopifnot(length(id) == length(name))
 
   dplyr::left_join(
     df, data.frame(id, deptName = name), by = c("AvdRESH" = "id")

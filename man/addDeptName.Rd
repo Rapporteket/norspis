@@ -25,8 +25,8 @@ Functions for processing raw NorSpis data
 \examples{
 # sample data
 df <- data.frame(AvdRESH = c(1, 2, 3))
-code <- c(1, 2, 3)
-value <- c("A", "B", "C")
+id <- c(1, 2, 3)
+name <- c("A", "B", "C")
 
 addDeptName(df, code, value)
 }
