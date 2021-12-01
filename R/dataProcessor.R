@@ -16,7 +16,7 @@
 #' id <- c(1, 2, 3)
 #' name <- c("A", "B", "C")
 #'
-#' addDeptName(df, code, value)
+#' addDeptName(df, id, name)
 
 addDeptName <- function(df, id, name) {
 
