@@ -117,6 +117,11 @@ test_that("data frame is returned", {
       queryForlopsOversikt(registryName, reshId, session = session)
     ) == "data.frame"
   )
+  expect_true(
+    class(
+      queryReshNames(registryName, session = session)
+    ) == "data.frame"
+  )
 })
 
 
