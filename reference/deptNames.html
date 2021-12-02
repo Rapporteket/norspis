@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • norspis</title>
+<title>Resh ids and department names for NorSpis — deptNames • norspis</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Resh ids and department names for NorSpis — deptNames" />
+<meta property="og:description" content="A dataset containing the Resh ids and corresponding department names for
+NorSpis." />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -103,78 +105,32 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Resh ids and department names for NorSpis</h1>
+    
+    <div class="hidden name"><code>deptNames.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>A dataset containing the Resh ids and corresponding department names for
+NorSpis.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='va'>deptNames</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="addDeptName.html">addDeptName()</a></code> </p>
-        </td>
-        <td><p>Functions for processing raw NorSpis data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="appServer.html">appServer()</a></code> </p>
-        </td>
-        <td><p>Server logic for the norspis app</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="appUi.html">appUi()</a></code> </p>
-        </td>
-        <td><p>Client (ui) for the norspis app</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="deptNames.html">deptNames</a></code> </p>
-        </td>
-        <td><p>Resh ids and department names for NorSpis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="norspisApp.html">norspisApp()</a></code> </p>
-        </td>
-        <td><p>Run the NorSpis Shiny Application</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="queryData.html">queryAlleScorer()</a></code> <code><a href="queryData.html">queryBehandling()</a></code> <code><a href="queryData.html">queryBehandlingNum()</a></code> <code><a href="queryData.html">queryEnkeltLedd()</a></code> <code><a href="queryData.html">queryEnkeltLeddNum()</a></code> <code><a href="queryData.html">queryForlopsOversikt()</a></code> <code><a href="queryData.html">queryReshNames()</a></code> </p>
-        </td>
-        <td><p>Get data from NorSpis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="reportProcessor.html">reportProcessor()</a></code> </p>
-        </td>
-        <td><p>Common report processor for NorSpis</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame with 2 variables:</p><dl>
+<dt>reshId</dt><dd><p>Organization id for a department</p></dd>
+<dt>deptName</dt><dd><p>Organization or department name</p></dd>
+...
+
+</dl>
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

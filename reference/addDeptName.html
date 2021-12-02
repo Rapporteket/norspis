@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • norspis</title>
+<title>Functions for processing raw NorSpis data — addDeptName • norspis</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Functions for processing raw NorSpis data — addDeptName" />
+<meta property="og:description" content="Functions for processing raw NorSpis data" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -103,78 +104,56 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Functions for processing raw NorSpis data</h1>
+    
+    <div class="hidden name"><code>addDeptName.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Functions for processing raw NorSpis data</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>addDeptName</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>id</span>, <span class='va'>name</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="addDeptName.html">addDeptName()</a></code> </p>
-        </td>
-        <td><p>Functions for processing raw NorSpis data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="appServer.html">appServer()</a></code> </p>
-        </td>
-        <td><p>Server logic for the norspis app</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="appUi.html">appUi()</a></code> </p>
-        </td>
-        <td><p>Client (ui) for the norspis app</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="deptNames.html">deptNames</a></code> </p>
-        </td>
-        <td><p>Resh ids and department names for NorSpis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="norspisApp.html">norspisApp()</a></code> </p>
-        </td>
-        <td><p>Run the NorSpis Shiny Application</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="queryData.html">queryAlleScorer()</a></code> <code><a href="queryData.html">queryBehandling()</a></code> <code><a href="queryData.html">queryBehandlingNum()</a></code> <code><a href="queryData.html">queryEnkeltLedd()</a></code> <code><a href="queryData.html">queryEnkeltLeddNum()</a></code> <code><a href="queryData.html">queryForlopsOversikt()</a></code> <code><a href="queryData.html">queryReshNames()</a></code> </p>
-        </td>
-        <td><p>Get data from NorSpis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="reportProcessor.html">reportProcessor()</a></code> </p>
-        </td>
-        <td><p>Common report processor for NorSpis</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>Data frame of registry data</p></td>
+    </tr>
+    <tr>
+      <th>id</th>
+      <td><p>Vector of unique ids for organization names. Must be of the same
+length as <code>name</code>. Normally this should be an ReshId.</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>Vector of unique organization names for corresponding ids. Must
+be of the same length as <code>id</code>.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A data frame of registry data with a new column providing department
+or organizational name based on AvdRESH</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='co'># sample data</span></span>
+<span class='r-in'><span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>AvdRESH <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>name</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>addDeptName</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>id</span>, <span class='va'>name</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   AvdRESH deptName</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1       1        A</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2       2        B</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3       3        C</span>
+</pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

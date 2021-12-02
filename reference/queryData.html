@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • norspis</title>
+<title>Get data from NorSpis — queryData • norspis</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Get data from NorSpis — queryData" />
+<meta property="og:description" content="Functions to query data from a database holding NorSpis data at Rapporteket.
+Providing these function with the shiny session object logging of queries
+will also be performed" />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -103,78 +106,59 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Get data from NorSpis</h1>
+    
+    <div class="hidden name"><code>queryData.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Functions to query data from a database holding NorSpis data at Rapporteket.
+Providing these function with the shiny session object logging of queries
+will also be performed</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>queryAlleScorer</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>reshId</span>, <span class='va'>...</span><span class='op'>)</span>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="addDeptName.html">addDeptName()</a></code> </p>
-        </td>
-        <td><p>Functions for processing raw NorSpis data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="appServer.html">appServer()</a></code> </p>
-        </td>
-        <td><p>Server logic for the norspis app</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="appUi.html">appUi()</a></code> </p>
-        </td>
-        <td><p>Client (ui) for the norspis app</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="deptNames.html">deptNames</a></code> </p>
-        </td>
-        <td><p>Resh ids and department names for NorSpis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="norspisApp.html">norspisApp()</a></code> </p>
-        </td>
-        <td><p>Run the NorSpis Shiny Application</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="queryData.html">queryAlleScorer()</a></code> <code><a href="queryData.html">queryBehandling()</a></code> <code><a href="queryData.html">queryBehandlingNum()</a></code> <code><a href="queryData.html">queryEnkeltLedd()</a></code> <code><a href="queryData.html">queryEnkeltLeddNum()</a></code> <code><a href="queryData.html">queryForlopsOversikt()</a></code> <code><a href="queryData.html">queryReshNames()</a></code> </p>
-        </td>
-        <td><p>Get data from NorSpis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="reportProcessor.html">reportProcessor()</a></code> </p>
-        </td>
-        <td><p>Common report processor for NorSpis</p></td>
-      </tr>
-    </tbody>
+<span class='fu'>queryBehandling</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>reshId</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>queryBehandlingNum</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>reshId</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>queryEnkeltLedd</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>reshId</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>queryEnkeltLeddNum</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>reshId</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>queryForlopsOversikt</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>reshId</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>queryReshNames</span><span class='op'>(</span><span class='va'>registryName</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>registryName</th>
+      <td><p>Character string with name of the registry from which
+data are to be queried</p></td>
+    </tr>
+    <tr>
+      <th>reshId</th>
+      <td><p>Integer providing the organization id. Usefull for data
+filtering</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Optional arguments to pass to the function. If <code>session</code> is
+provided this will be assumed a valid shiny session object and hence logging
+will be performed</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Data frame of registry data</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
