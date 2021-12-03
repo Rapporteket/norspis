@@ -9,7 +9,7 @@ params:
   userFullName: Tore Tester
   userRole: ukjent rolle
 title: Norsk kvalitetsregister for behandling av spiseforstyrrelser (NorSpis)
-abstract: Her kan det legges inn et sammendrag av rapporten, om det er ønskelig...
+abstract: Dette er en eksempelrapport for NorSpis som er basert på reelle data men som antagelig ikke er nyttig for noe. Formålet er å gi praktiske eksempler på hvordan slike rapporter kan etableres
 date: '`r format(Sys.time(), "%d. %B, %Y")`'
 registryName: '`r params$registryName`'
 reglogo: '`r system.file("logoNorspis.png", package = "norspis")`'
@@ -39,66 +39,70 @@ colKontrast <- "#FF7260"
 ```
 
 ```{r getData}
-df <- norspis::queryForlopsOversikt(registryName = registryName,
+df <- norspis::queryForlopsOversikt(registryName = params$registryName,
                                     reshId = params$reshId)
-
-names(df) <- tolower(names(df))
 ```
 
 
 # Datagrunnlag
+Formålet med denne rapporten er å gi praktiske eksempler på hvordan slike rapporter kan etableres. Selv om datagrunnlaget godt kan være "ekte", så er nødvendigvis ikke resultatene som framkommer her anvendbare på annet vis en som metodisk illustrasjon.  
+
 Denne rapporten er generert via Rapporteket for NorSpis av brukeren
 `r params$author` logget på med  `r params$userRole`-rolle ved
 `r params$hospitalName`. Rapporten er laget den
-`r format(Sys.time(), '%d %B, %Y')` og er enten manuelt nedlastet eller
-automatisk tilsent  av abonnementstenesten til Rapporteket.
+`r format(Sys.time(), '%d. %B, %Y')` og er enten manuelt nedlastet eller
+automatisk tilsent av abonnementstjenesten til Rapporteket.
 
 Alle opptellinger og statistikker er gjort per forløp. Det vil si at eventuelle
-pasienter med > 1 forløp teller flere ganger.<br>
+pasienter med > 1 forløp teller flere ganger.
 
 
-# Forløpstype
-Tabell \@ref(tab:typeForlopAar) under viser totalt antall forløp de `r showN` siste månedene.
-```{r typeForlopAar}
-cap <- paste("Totalt antall forløp de siste", showN, "månedene.")
-d_ablanor %>%
-  dplyr::count(forlopstype) %>%
-  janitor::adorn_totals() %>%
-  ablanor::legg_til_forlopstype_kortnavn(., total = TRUE) %>%
-  dplyr::select(forlopstype_tekst, n) %>%
-  dplyr::rename("Forløpstype" = forlopstype_tekst) %>%
-  rapbase::mst(.,
-               type = params$tableFormat,
-               cap = cap,
-               digs = 1,
-               align = "lcc",
-               fs = 9, lsd = FALSE)
+# Totalt antall forløp fordelt på år
+I datagrunnlaget ligger det registreringer fra og med `r format(min(df$HovedDato, na.rm = TRUE), "%d. %B, %Y")` til og med `r format(max(df$HovedDato, na.rm = TRUE), "%d. %B, %Y")` og består av i alt `r dim(df)[1]` forløp for i alt `r dplyr::distinct(df, PasientID) %>% dplyr::count()` pasienter.
+
+Antall forløp over år er gitt i Figur \@ref(fig:forlopPerAarFig) og i Tabell \@ref(tab:forlopPerAarTab).
+
+```{r processForlopPerYear}
+fYear <- df %>%
+  dplyr::mutate(Aar = lubridate::year(.data$HovedDato)) %>%
+  dplyr::group_by(Aar) %>%
+  dplyr::summarise(Forlop = dplyr::n()) %>%
+  dplyr::select(Aar, Forlop)
 ```
 
-Figur \@ref(fig:typeForlopFig) viser antall forløp per måned de `r showN` siste månedene.
-```{r typeForlopFig, fig.cap = paste("Andel forløp per måned de siste", showN, "månedene"), fig.width = 20, fig.height = 10, fig.pos = "H", fig.align = "center", out.width = "\\textwidth" }
-d_forlop_mnd <- d_ablanor %>%
-  dplyr::count(maaned, forlopstype, .drop = FALSE) %>%
-  ablanor::legg_til_forlopstype_kortnavn() %>%
-  dplyr::mutate(n_uten0 = case_when(n == 0 ~ "",
-                             n != 0 ~ as.character(n))) %>%
-  dplyr::mutate(forlopstype_tekst = factor(x = forlopstype_tekst,
-                                           levels = c("AFLI", "VT", "SVT", "EFU")))
-ggplot2::ggplot(data = d_forlop_mnd, aes(y = n, x = maaned, fill = forlopstype_tekst)) +
+```{r forlopPerAarTab}
+cap <- paste("Totalt antall forløp per år.")
+rapbase::mst(fYear,
+             type = params$tableFormat,
+             cap = cap,
+             digs = 0,
+             align = "cr",
+             fs = 9, lsd = FALSE)
+```
+
+```{r forlopPerAarFig, fig.cap = paste("Totalt antall forløp per år."), fig.pos = "H", fig.align = "center", out.width = "100%" }
+ggplot2::ggplot(data = fYear, ggplot2::aes(x=Aar, y = Forlop)) +
+  ggplot2::geom_bar(stat="identity")
+```
+
+# Typer av forløp type 1 og fordeling de siste 12 måneder
+Fordeling av ulike typer forløp de siste 12 måneder er vist i Figur \@ref(fig:forlopPerMaanedFig).
+``` {r processDistribution}
+fMon <- df %>% 
+  dplyr::filter(!is.na(.data$HovedDato)) %>%
+  dplyr::filter(.data$HovedDato > (Sys.Date() - lubridate::years(1))) %>% 
+  dplyr::mutate(Aar = lubridate::year(.data$HovedDato)) %>%
+  dplyr::mutate(AarMaaned = format(.data$HovedDato, "%y-%m")) %>%
+  dplyr::count(AarMaaned, ForlopsType1, .drop = FALSE)
+```
+
+```{r forlopPerMaanedFig, fig.cap = paste("Fordeling type 1 forløp per måned. Registreringer uten dato er tatt ut av datasettet."), fig.pos = "H", fig.align = "center", out.width = "100%" }
+
+ggplot2::ggplot(data = fMon, ggplot2::aes(y = n, x = AarMaaned, fill = ForlopsType1)) +
   ggplot2::geom_bar(stat = "identity", position = "stack") +
   ggplot2::labs(fill = "Forløpstype") +
-  ggplot2::scale_fill_manual(values= colPrimary[3:6]) +
-  ggplot2::geom_text(aes(label = n_uten0), position = position_stack(vjust = .5), size=10) +
   ggplot2::scale_y_continuous(name = "Antall forløp", ) +
-  ggplot2::theme(panel.grid.major.x = element_blank()) +
+  ggplot2::theme(panel.grid.major.x = ggplot2::element_blank()) +
   ggplot2::xlab("Måned") +
-  ggplot2::theme(text = element_text(size = 20))
-```
-
-
-
-
-
-```{r pagebreak5, results = "asis", eval = (params$tableFormat == "latex")}
-  cat("\n\n\\pagebreak\n")
+  ggplot2::theme(text = ggplot2::element_text(size = 10))
 ```

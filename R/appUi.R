@@ -35,6 +35,24 @@ appUi <- function() {
       ),
 
       shiny::tabPanel(
+        "Eksempelrapport",
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            shiny::radioButtons("formatReport",
+                                "Format for nedlasting",
+                                list(PDF = "pdf", HTML = "html"),
+                                inline = FALSE),
+            shiny::downloadButton("downloadReport", "Last ned!"),
+            width = 2
+          ),
+          shiny::mainPanel(
+            shiny::htmlOutput("exReport", inline = TRUE)
+          )
+
+        )
+      ),
+
+      shiny::tabPanel(
         "Abonnement",
         shiny::sidebarLayout(
           shiny::sidebarPanel(
