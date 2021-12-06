@@ -27,8 +27,6 @@
 #' user requesting the report. Default is "unknown person name".
 #' @param userRole Character string giving a user role, normally the one of the
 #' user requesting the report. Default is "unknown role".
-#' @param userOperator Character string with some name of an operator, whatever
-#' that is... Default is "unknown operator".
 #'
 #' @return A character string with a path to where the produced file is located.
 #' @export
@@ -45,12 +43,11 @@ reportProcessor <- function(report,
                             author = "unknown author",
                             orgName = "unknown organization",
                             orgId = 999999,
-                            registryName = "ablanor",
+                            registryName = "norspis",
                             userFullName = "unknown person name",
-                            userRole = "unknown role",
-                            userOperator = "unknown operator") {
+                            userRole = "unknown role") {
 
-  stopifnot(report %in% c("veiledning"))
+  stopifnot(report %in% c("veiledning", "eksSamlerapport"))
 
   stopifnot(outputType %in% c("html", "pdf"))
 
@@ -63,6 +60,20 @@ reportProcessor <- function(report,
   if (report == "veiledning") {
     filePath <- rapbase::renderRmd(
       system.file("veiledning.Rmd", package = "norspis"),
+      outputType = outputType,
+      params = list(
+        title = title,
+        author = author,
+        hospitalName = orgName,
+        tableFormat = outputType,
+        reshId = orgId
+      )
+    )
+  }
+
+  if (report == "eksSamlerapport") {
+    filePath <- rapbase::renderRmd(
+      system.file("eksSamlerapport.Rmd", package = "norspis"),
       outputType = outputType,
       params = list(
         title = title,
