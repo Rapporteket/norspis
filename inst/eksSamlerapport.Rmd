@@ -8,7 +8,7 @@ params:
   registryName: norspis
   userFullName: Tore Tester
   userRole: ukjent rolle
-title: Norsk kvalitetsregister for behandling av spiseforstyrrelser (NorSpis): eksempelrapport
+title: Norsk kvalitetsregister for behandling av spiseforstyrrelser (NorSpis) EKSEMPELRAPPORT
 abstract: Dette er en eksempelrapport for NorSpis som er basert på reelle data men som antagelig ikke er nyttig for noe. Formålet er å gi praktiske eksempler på hvordan slike rapporter kan etableres
 date: '`r format(Sys.time(), "%d. %B, %Y")`'
 registryName: '`r params$registryName`'
