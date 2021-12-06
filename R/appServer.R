@@ -12,7 +12,7 @@ appServer <- function(input, output, session) {
   rapbase::appLogger(session = session, msg = "Starting norspis application")
 
   registryName <- "norspis"
-  hospitalName <- "Syke Hus"
+  hospitalName <- "Udefinert avdeling/sykehus"
   userFullName <- rapbase::getUserFullName(session)
   userRole <- rapbase::getUserRole(session)
   userReshId <- rapbase::getUserReshId(session)
