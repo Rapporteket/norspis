@@ -69,6 +69,12 @@ appServer <- function(input, output, session) {
       fun = "reportProcessor",
       paramNames = c("report", "outputFormat", "title"),
       paramValues = c("veiledning", "pdf", "Testrapport")
+    ),
+    Eksempelrapport = list(
+      synopsis = "Eksempelrapport med data fra NorSpis",
+      fun = "reportProcessor",
+      paramNames = c("report", "outputFormat", "title"),
+      paramValues = c("eksSamlerapport", "pdf", "Eksempelrapport")
     )
   )
 

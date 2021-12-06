@@ -11,10 +11,9 @@ reportProcessor(
   author = "unknown author",
   orgName = "unknown organization",
   orgId = 999999,
-  registryName = "ablanor",
+  registryName = "norspis",
   userFullName = "unknown person name",
-  userRole = "unknown role",
-  userOperator = "unknown operator"
+  userRole = "unknown role"
 )
 }
 \arguments{
@@ -44,9 +43,6 @@ user requesting the report. Default is "unknown person name".}
 
 \item{userRole}{Character string giving a user role, normally the one of the
 user requesting the report. Default is "unknown role".}
-
-\item{userOperator}{Character string with some name of an operator, whatever
-that is... Default is "unknown operator".}
 }
 \value{
 A character string with a path to where the produced file is located.
