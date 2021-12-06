@@ -21,6 +21,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,18 +35,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">norspis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -64,93 +60,105 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="norspis" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#norspis" class="anchor"></a>norspis</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="norspis">norspis<a class="anchor" aria-label="anchor" href="#norspis"></a>
+</h1></div>
 <!-- badges: start -->
 
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of norspis from <a href="https://github.com/Rapporteket/norspis">GitHub</a> with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of norspis from <a href="https://github.com/Rapporteket/norspis" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"Rapporteket/norspis@*release"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Rapporteket/norspis@*release"</span><span class="op">)</span></code></pre></div>
 <p>The latest development version can be installed with</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"Rapporteket/norspis"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Rapporteket/norspis"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
 <p>Start the shiny application from the R console:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/norspisApp.html">norspisApp</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="issues" class="section level2">
-<h2 class="hasAnchor">
-<a href="#issues" class="anchor"></a>Issues</h2>
-<p>Please provide any comments (<em>e.g.</em> on proposed enhancements, shortcomings, errors) through the <a href="https://github.com/Rapporteket/norspis/issues">issue tracker</a>.</p>
+<div class="section level2">
+<h2 id="issues">Issues<a class="anchor" aria-label="anchor" href="#issues"></a>
+</h2>
+<p>Please provide any comments (<em>e.g.</em> on proposed enhancements, shortcomings, errors) through the <a href="https://github.com/Rapporteket/norspis/issues" class="external-link">issue tracker</a>.</p>
 </div>
-<div id="develop" class="section level2">
-<h2 class="hasAnchor">
-<a href="#develop" class="anchor"></a>Develop</h2>
+<div class="section level2">
+<h2 id="develop">Develop<a class="anchor" aria-label="anchor" href="#develop"></a>
+</h2>
 <p>Contributors submit their code by branching from the <em>main</em> branch and issuing a pull request. After acceptance by peer review the pull request may be merged to the main branch. Changes that are accepted in TEST and/or QA environments may be tagged as a new release of the package.</p>
 <p>A development environment is provided as a <em>docker-compose.yml</em> file found in the root of this repository. The container can be run from a system command prompt, <em>e.g.</em></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">docker-compose</span> up</span></code></pre></div>
-<p>and the development environment will then be served by localhost through a web browser. By default, RStudio will accessible at <a href="http://localhost:8787">localhost:8787</a>, the database server at <a href="http://localhost:8888">localhost:8888</a> and Shiny-Server at <a href="http://localhost:3838">localhost:3838</a>.</p>
+<p>and the development environment will then be served by localhost through a web browser. By default, RStudio will accessible at <a href="http://localhost:8787" class="external-link">localhost:8787</a>, the database server at <a href="http://localhost:8888" class="external-link">localhost:8888</a> and Shiny-Server at <a href="http://localhost:3838" class="external-link">localhost:3838</a>.</p>
 </div>
-<div id="ethics" class="section level2">
-<h2 class="hasAnchor">
-<a href="#ethics" class="anchor"></a>Ethics</h2>
-<p>Please note that the norspis project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<div class="section level2">
+<h2 id="ethics">Ethics<a class="anchor" aria-label="anchor" href="#ethics"></a>
+</h2>
+<p>Please note that the norspis project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small>GPL (&gt;= 3)</small></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Are Edvardsen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5210-3656" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing norspis</a></li>
+</ul>
+</div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Are Edvardsen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5210-3656" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Kevin Otto Thon <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/rapporteket/norspis/releases"><img src="https://img.shields.io/github/v/release/rapporteket/norspis?sort=semver" alt="Version"></a></li>
-<li><a href="https://github.com/rapporteket/norspis/actions"><img src="https://github.com/rapporteket/norspis/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://codecov.io/gh/Rapporteket/norspis?branch=main"><img src="https://codecov.io/gh/Rapporteket/norspis/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
-<li><a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a></li>
-<li><a href="https://github.com/rapporteket/norspis/issues"><img src="https://img.shields.io/github/issues/rapporteket/norspis.svg" alt="GitHub open issues"></a></li>
-<li><a href="https://rapporteket.github.io/norspis/"><img src="https://img.shields.io/badge/Doc--grey.svg" alt="Doc"></a></li>
+<li><a href="https://github.com/rapporteket/norspis/releases" class="external-link"><img src="https://img.shields.io/github/v/release/rapporteket/norspis?sort=semver" alt="Version"></a></li>
+<li><a href="https://github.com/rapporteket/norspis/actions" class="external-link"><img src="https://github.com/rapporteket/norspis/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://codecov.io/gh/Rapporteket/norspis?branch=main" class="external-link"><img src="https://codecov.io/gh/Rapporteket/norspis/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://www.gnu.org/licenses/gpl-3.0" class="external-link"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a></li>
+<li><a href="https://github.com/rapporteket/norspis/issues" class="external-link"><img src="https://img.shields.io/github/issues/rapporteket/norspis.svg" alt="GitHub open issues"></a></li>
+<li><a href="https://rapporteket.github.io/norspis/" class="external-link"><img src="https://img.shields.io/badge/Doc--grey.svg" alt="Doc"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Are Edvardsen, Kevin Otto Thon.</p>
+  <p></p>
+<p>Developed by Are Edvardsen, Kevin Otto Thon.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -158,6 +166,8 @@
 
   
 
+
+  
 
   </body>
 </html>
