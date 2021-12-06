@@ -42,8 +42,7 @@ appUi <- function() {
                                 "Format for nedlasting",
                                 list(PDF = "pdf", HTML = "html"),
                                 inline = FALSE),
-            shiny::downloadButton("downloadReport", "Last ned!"),
-            width = 2
+            shiny::downloadButton("downloadReport", "Last ned!")
           ),
           shiny::mainPanel(
             shiny::htmlOutput("exReport", inline = TRUE)
@@ -104,7 +103,7 @@ appUi <- function() {
               rapbase::exportGuideUI("norspisExport")
             )
           )
-        ),
+        )
       )
     )
   )
