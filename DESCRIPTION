@@ -25,7 +25,8 @@ Imports:
     lubridate,
     magrittr,
     shiny,
-    rapbase
+    rapbase,
+    rlang
 Remotes:
     Rapporteket/rapbase@*release,
 Suggests: 
