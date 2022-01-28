@@ -22,20 +22,20 @@ admtab_ui <- function(id) {
                                               max = Sys.Date(), start  = Sys.Date() %m-% months(12),
                                               end = Sys.Date(), separator = " til "),
                         shiny::selectInput(inputId = ns("regstatus"), label = "Skjemastatus",
-                                           choices = c('Ferdigstilt'=1, 'I kladd'=0, 'Opprettet'=-1)),
+                                           choices = c('Ferdigstilt'=1, 'I kladd'=0, 'Opprettet'=-1),
+                                           multiple = TRUE,
+                                           selected = 1),
                         shiny::tags$hr(),
                         shiny::actionButton(ns("reset_input"), "Nullstill valg")
     ),
     shiny::mainPanel(shiny::tabsetPanel(id= ns("admtabeller"),
-                          shiny::tabPanel("Antall skjema", value = "id_ant_skjema",
-                                          shiny::h2('Innregistreringer i NorSpis etter skjematype',
-                                                    align='center'),
-                                          shiny::br(),
-                                          shiny::br(),
-                                          DT::DTOutput(ns("Tabell_adm1")),
-                                          shiny::downloadButton(ns("lastNed_adm1"),
-                                                                "Last ned tabell")
-                          )
+                                        shiny::tabPanel("Antall skjema", value = "id_ant_skjema",
+                                                        shiny::h2('Innregistreringer i NorSpis etter skjematype',
+                                                                  align='center'),
+                                                        shiny::br(),
+                                                        shiny::br(),
+                                                        DT::DTOutput(ns("Tabell_adm1"))
+                                        )
     )
     )
   )
@@ -47,8 +47,6 @@ admtab_ui <- function(id) {
 admtab_server <- function(id, skjemaoversikt) {
 
   moduleServer(id, function(input, output, session) {
-
-    # admtab <- function(input, output, session, skjemaoversikt){
 
     antskjema <- function() {
       ant_skjema <- skjemaoversikt %>%
@@ -70,7 +68,20 @@ admtab_server <- function(id, skjemaoversikt) {
       DT::datatable(antskjema()$ant_skjema[-dim(antskjema()$ant_skjema)[1], ],
                     container = antskjema()$sketch,
                     rownames = F,
-                    options = list(pageLength = 40)
+                    extensions = 'Buttons',
+
+                    options = list(
+                      paging = TRUE,
+                      pageLength = 40,
+                      searching = TRUE,
+                      fixedColumns = TRUE,
+                      autoWidth = TRUE,
+                      ordering = TRUE,
+                      dom = 'tB',
+                      buttons = c('copy', 'csv', 'excel')
+                    ),
+
+                    class = "display"
       )
     )
 
@@ -86,17 +97,32 @@ admtab_server <- function(id, skjemaoversikt) {
 #' @rdname admtab
 #' @export
 admtab_demo <- function() {
-  # library(lubridate)
+  library(lubridate)
+  shiny::addResourcePath("rap", system.file("www", package = "rapbase"))
+  appTitle <- "NorSpis"
   SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
   shusnavn <- norspis::queryReshNames("norspis")
   SkjemaOversikt$shusnavn <-
     shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
-  ui <- shiny::navbarPage(id = "tmp_app_id",
-                          title = shiny::div(shiny::a(shiny::includeHTML(system.file('www/logo.svg', package='rapbase'))),
-                                             "NorSpis"),
-                          windowTitle = "NorSpis",
-                          theme = "rap/bootstrap.css",
-                          shiny::tabPanel("Administrative tabeller", norspis::admtab_ui("x"))
+  SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9] <-
+    paste0(SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9], " (2)")
+  SkjemaOversikt$Skjemanavn <-
+    factor(SkjemaOversikt$Skjemanavn,
+           levels = SkjemaOversikt$Skjemanavn[match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
+                                                    SkjemaOversikt$SkjemaRekkeflg)])
+  ui <- shiny::navbarPage(
+    title = shiny::div(
+      shiny::a(
+        shiny::includeHTML(
+          system.file("www/logo.svg", package = "rapbase")
+        )
+      ),
+      appTitle
+    ),
+    windowTitle = appTitle,
+    theme = "rap/bootstrap.css",
+    id = "tabs",
+    shiny::tabPanel("Administrative tabeller", norspis::admtab_ui("x"))
   )
   server <- function(input, output, session) {
     norspis::admtab_server("x", SkjemaOversikt)
