@@ -11,6 +11,14 @@ appServer <- function(input, output, session) {
 
   rapbase::appLogger(session = session, msg = "Starting norspis application")
 
+  # Last data og pakker
+  library(lubridate)
+  library(DT)
+  SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
+  shusnavn <- queryReshNames("norspis")
+  SkjemaOversikt$shusnavn <-
+    shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
+
   registryName <- "norspis"
   hospitalName <- "Udefinert avdeling/sykehus"
   userFullName <- rapbase::getUserFullName(session)
@@ -19,6 +27,9 @@ appServer <- function(input, output, session) {
 
   rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
                               caller = "norspis")
+
+  # Administrative tabeller
+  norspis::admtab_server("admtabell", SkjemaOversikt)
 
   # Eksempelrapport
   output$exReport <- shiny::renderUI({

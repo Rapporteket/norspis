@@ -63,6 +63,11 @@ appUi <- function() {
         )
       ),
 
+      shiny::tabPanel(
+        "Administrative tabeller",
+        norspis::admtab_ui("admtabell")
+      ),
+
       shiny::navbarMenu(
         "Verkt\u00f8y",
 

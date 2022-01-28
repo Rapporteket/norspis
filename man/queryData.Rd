@@ -9,6 +9,7 @@
 \alias{queryEnkeltLeddNum}
 \alias{queryForlopsOversikt}
 \alias{queryReshNames}
+\alias{querySkjemaOversikt}
 \title{Get data from NorSpis}
 \usage{
 queryAlleScorer(registryName, reshId, ...)
@@ -24,6 +25,8 @@ queryEnkeltLeddNum(registryName, reshId, ...)
 queryForlopsOversikt(registryName, reshId, ...)
 
 queryReshNames(registryName, ...)
+
+querySkjemaOversikt(registryName, reshId, ...)
 }
 \arguments{
 \item{registryName}{Character string with name of the registry from which

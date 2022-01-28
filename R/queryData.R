@@ -133,3 +133,17 @@ GROUP BY
 
   rapbase::loadRegData(registryName, query)
 }
+
+#' @rdname queryData
+#' @export
+querySkjemaOversikt <- function(registryName, reshId, ...) {
+
+  query <- "SELECT * FROM SkjemaOversikt;"
+
+  if ("session" %in% names(list(...))) {
+    msg = paste0("Load SkjemaOversikt data from ", registryName, ": ", query)
+    rapbase::repLogger(session = list(...)[["session"]], msg)
+  }
+
+  rapbase::loadRegData(registryName, query)
+}
