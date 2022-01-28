@@ -18,12 +18,19 @@ appServer <- function(input, output, session) {
   shusnavn <- queryReshNames("norspis")
   SkjemaOversikt$shusnavn <-
     shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
+  SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9] <-
+    paste0(SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9], " (2)")
+  SkjemaOversikt$Skjemanavn <-
+    factor(SkjemaOversikt$Skjemanavn,
+           levels = SkjemaOversikt$Skjemanavn[match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
+                                                    SkjemaOversikt$SkjemaRekkeflg)])
 
   registryName <- "norspis"
-  hospitalName <- "Udefinert avdeling/sykehus"
+  # hospitalName <- "Udefinert avdeling/sykehus"
   userFullName <- rapbase::getUserFullName(session)
   userRole <- rapbase::getUserRole(session)
   userReshId <- rapbase::getUserReshId(session)
+  hospitalName <- shusnavn$shortName[match(userReshId, shusnavn$reshId)]
 
   rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
                               caller = "norspis")
