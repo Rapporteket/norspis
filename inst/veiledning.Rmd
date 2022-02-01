@@ -7,7 +7,7 @@ date: '`r format(Sys.time(), "%d. %B %Y")`'
 ## Velkommen til NorSpis på Rapporteket
 
 ### Navigering
-Bruk fanene i toppen til å navigere til ulike typer rapporter.
+Bruk fanene i toppen til å navigere til ulike typer rapporter hvis du vil ha det litt gøy.
 
 ### Retningslinjer for bruk: hvem, hva, hvor?
 Formålet med Rapporteket er å gi sykehusavdelingene statistikk og resultater som kan benyttes i det kontinuerlige forbedringsarbeidet. Rapportene er ment for intern bruk ved de registrerende behandlingsenhetene.
