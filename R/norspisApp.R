@@ -4,6 +4,6 @@
 #' @export
 
 norspisApp <- function() {
-
+  library(lubridate)
   shiny::shinyApp(ui = appUi, server = appServer)
 }
