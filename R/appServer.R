@@ -11,19 +11,20 @@ appServer <- function(input, output, session) {
 
   rapbase::appLogger(session = session, msg = "Starting norspis application")
 
-  # Last data og pakker
-  library(lubridate)
-  library(DT)
+  # Last data
   SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
+  ForlopsOversikt <- norspis::queryForlopsOversikt("norspis")
   shusnavn <- queryReshNames("norspis")
   SkjemaOversikt$shusnavn <-
     shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
-  SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9] <-
-    paste0(SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9], " (2)")
+  SkjemaOversikt$SkjemaRekkeflg[SkjemaOversikt$SkjemaRekkeflg==9] <- "5"
   SkjemaOversikt$Skjemanavn <-
     factor(SkjemaOversikt$Skjemanavn,
            levels = SkjemaOversikt$Skjemanavn[match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
                                                     SkjemaOversikt$SkjemaRekkeflg)])
+  SkjemaOversikt <-
+    merge(SkjemaOversikt, ForlopsOversikt[, c("ForlopsID", "ForlopsType1", "ForlopsType1Num")],
+          by = "ForlopsID", all.x = T)
 
   registryName <- "norspis"
   # hospitalName <- "Udefinert avdeling/sykehus"

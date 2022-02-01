@@ -4,6 +4,5 @@
 #' @export
 
 norspisApp <- function() {
-
   shiny::shinyApp(ui = appUi, server = appServer)
 }
