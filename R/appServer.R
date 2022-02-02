@@ -14,6 +14,7 @@ appServer <- function(input, output, session) {
   # Last data
   SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
   ForlopsOversikt <- norspis::queryForlopsOversikt("norspis")
+  # ForlopsOversikt$HovedDato <- as.Date(ForlopsOversikt$HovedDato)
   shusnavn <- queryReshNames("norspis")
   SkjemaOversikt$shusnavn <-
     shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
@@ -38,6 +39,37 @@ appServer <- function(input, output, session) {
 
   # Administrative tabeller
   norspis::admtab_server("admtabell", SkjemaOversikt)
+
+  #forløpstype brukerkontroll
+  output$forlopstype_ui <- shiny::renderUI({
+
+    forlopstyper <- sort(unique(as.numeric(ForlopsOversikt$ForlopsType1Num)))
+    names(forlopstyper) <- ForlopsOversikt$ForlopsType1[match(forlopstyper, ForlopsOversikt$ForlopsType1Num)]
+    names(forlopstyper)[forlopstyper==0] <- "Ingen"
+    selectInput(inputId = "forlopstype", label = "Velg forløpstype(r)",
+                choices = forlopstyper, multiple = T, selected = c(3, 5, 7, 4, 6, 8))
+  })
+
+
+
+
+
+  #Registeringer per enhet----
+  output$tabell_id <- shiny::renderTable({
+    data <- ForlopsOversikt %>%
+      dplyr::filter(HovedDato >= input$dato_id[1] & HovedDato <= input$dato_id[2]) %>%
+      dplyr::filter(ForlopsType1Num %in% input$forlopstype) %>%
+      dplyr::filter(BasisRegStatus %in% input$regstatus) %>%
+      dplyr::select("SykehusNavn", "ForlopsType1") %>%
+      table() %>%
+      addmargins() %>%
+      as.data.frame.matrix() %>%
+      tidyr::as_tibble(rownames = "Enhet")
+
+
+
+
+  }, digits = 0)
 
   # Eksempelrapport
   output$exReport <- shiny::renderUI({
@@ -77,6 +109,8 @@ appServer <- function(input, output, session) {
       file.rename(fn, file)
     }
   )
+
+
 
   # dummy report and orgs to subscribe and dispatch
   orgs <- list(
