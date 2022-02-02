@@ -111,19 +111,21 @@ admtab_server <- function(id, skjemaoversikt) {
 #' @rdname admtab
 #' @export
 admtab_demo <- function() {
-  library(lubridate)
   shiny::addResourcePath("rap", system.file("www", package = "rapbase"))
   appTitle <- "NorSpis"
   SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
-  shusnavn <- norspis::queryReshNames("norspis")
+  ForlopsOversikt <- norspis::queryForlopsOversikt("norspis")
+  shusnavn <- queryReshNames("norspis")
   SkjemaOversikt$shusnavn <-
     shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
-  SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9] <-
-    paste0(SkjemaOversikt$Skjemanavn[SkjemaOversikt$SkjemaRekkeflg==9], " (2)")
+  SkjemaOversikt$SkjemaRekkeflg[SkjemaOversikt$SkjemaRekkeflg==9] <- "5"
   SkjemaOversikt$Skjemanavn <-
     factor(SkjemaOversikt$Skjemanavn,
            levels = SkjemaOversikt$Skjemanavn[match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
                                                     SkjemaOversikt$SkjemaRekkeflg)])
+  SkjemaOversikt <-
+    merge(SkjemaOversikt, ForlopsOversikt[, c("ForlopsID", "ForlopsType1", "ForlopsType1Num")],
+          by = "ForlopsID", all.x = T)
   ui <- shiny::navbarPage(
     title = shiny::div(
       shiny::a(
