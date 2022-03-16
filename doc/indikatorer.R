@@ -6,7 +6,7 @@ NorSpisEnkeltledd <- norspis::queryEnkeltLeddNum("norspis")
 NorSpisAlleScorer <- norspis::queryAlleScorer("norspis")
 #Merge data
 RegData <- merge(NorSpisForlop, NorSpisAlleScorer, suffixes = c('','y'),
-                        by = "ForlopsID", all = FALSE) %>%
+                 by = "ForlopsID", all = FALSE) %>%
   merge(NorSpisEnkeltledd, suffixes = c('','X'), by = "ForlopsID", all = FALSE) %>%
   tibble::as_tibble() %>% dplyr::mutate(ForlopsID = as.numeric(ForlopsID))
 
@@ -30,6 +30,9 @@ map_avdresh_avdnavn <-
     107026, 'Bergen (regional)', 991992677,
     4210303, 'Tr.heim (spes.pol.)', 974748959,
     4207697, "Stjørdal (DPS)", 884038162,
+    104083, "Post C SSA", 999,
+    4204275, "DPS Halden-Sarpsborg", 999,
+    4208548, "Vinderen", 999
   )
 
 #############
@@ -59,7 +62,7 @@ data <-
     dateFrom.y =
       "2012-01-01",
     dateTo.y =
-      "2020-12-31",
+      "2021-12-31",
     BasisRegStatus.y = 1) #only complete reg
 #filter data, only end
 data_only_end <-
@@ -68,7 +71,7 @@ data_only_end <-
     dateFrom =
       "2012-01-01",
     dateTo =
-      "2020-12-31",
+      "2021-12-31",
     regStatus = 1)#only complete reg
 #Make table
 output_tibble_KI1_3 <- tibble() #just making an empty tibble where output of the "for loop" can go
