@@ -6,7 +6,7 @@ NorSpisEnkeltledd <- norspis::queryEnkeltLeddNum("norspis")
 NorSpisAlleScorer <- norspis::queryAlleScorer("norspis")
 #Merge data
 RegData <- merge(NorSpisForlop, NorSpisAlleScorer, suffixes = c('','y'),
-                        by = "ForlopsID", all = FALSE) %>%
+                 by = "ForlopsID", all = FALSE) %>%
   merge(NorSpisEnkeltledd, suffixes = c('','X'), by = "ForlopsID", all = FALSE) %>%
   tibble::as_tibble() %>% dplyr::mutate(ForlopsID = as.numeric(ForlopsID))
 
@@ -30,6 +30,9 @@ map_avdresh_avdnavn <-
     107026, 'Bergen (regional)', 991992677,
     4210303, 'Tr.heim (spes.pol.)', 974748959,
     4207697, "Stjørdal (DPS)", 884038162,
+    104083, "Post C SSA", 999,
+    4204275, "DPS Halden-Sarpsborg", 999,
+    4208548, "Vinderen", 999
   )
 
 #############
