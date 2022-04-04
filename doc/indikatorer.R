@@ -59,7 +59,7 @@ data <-
     dateFrom.y =
       "2012-01-01",
     dateTo.y =
-      "2020-12-31",
+      "2021-12-31",
     BasisRegStatus.y = 1) #only complete reg
 #filter data, only end
 data_only_end <-
@@ -68,7 +68,7 @@ data_only_end <-
     dateFrom =
       "2012-01-01",
     dateTo =
-      "2020-12-31",
+      "2021-12-31",
     regStatus = 1)#only complete reg
 #Make table
 output_tibble_KI1_3 <- tibble() #just making an empty tibble where output of the "for loop" can go
