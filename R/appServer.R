@@ -14,21 +14,21 @@ appServer <- function(input, output, session) {
   # Last data
   SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
   ForlopsOversikt <- norspis::queryForlopsOversikt("norspis")
-  # ForlopsOversikt$HovedDato <- as.Date(ForlopsOversikt$HovedDato)
   shusnavn <- queryReshNames("norspis")
   SkjemaOversikt$shusnavn <-
     shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
   SkjemaOversikt$SkjemaRekkeflg[SkjemaOversikt$SkjemaRekkeflg==9] <- "5"
   SkjemaOversikt$Skjemanavn <-
     factor(SkjemaOversikt$Skjemanavn,
-           levels = SkjemaOversikt$Skjemanavn[match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
-                                                    SkjemaOversikt$SkjemaRekkeflg)])
+           levels = SkjemaOversikt$Skjemanavn[
+             match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
+                   SkjemaOversikt$SkjemaRekkeflg)])
   SkjemaOversikt <-
-    merge(SkjemaOversikt, ForlopsOversikt[, c("ForlopsID", "ForlopsType1", "ForlopsType1Num")],
+    merge(SkjemaOversikt, ForlopsOversikt[, c("ForlopsID", "ForlopsType1",
+                                              "ForlopsType1Num")],
           by = "ForlopsID", all.x = T)
 
   registryName <- "norspis"
-  # hospitalName <- "Udefinert avdeling/sykehus"
   userFullName <- rapbase::getUserFullName(session)
   userRole <- rapbase::getUserRole(session)
   userReshId <- rapbase::getUserReshId(session)
@@ -38,38 +38,7 @@ appServer <- function(input, output, session) {
                               caller = "norspis")
 
   # Administrative tabeller
-  norspis::admtab_server("admtabell", SkjemaOversikt)
-
-  #forløpstype brukerkontroll
-  output$forlopstype_ui <- shiny::renderUI({
-
-    forlopstyper <- sort(unique(as.numeric(ForlopsOversikt$ForlopsType1Num)))
-    names(forlopstyper) <- ForlopsOversikt$ForlopsType1[match(forlopstyper, ForlopsOversikt$ForlopsType1Num)]
-    names(forlopstyper)[forlopstyper==0] <- "Ingen"
-    selectInput(inputId = "forlopstype", label = "Velg forløpstype(r)",
-                choices = forlopstyper, multiple = T, selected = c(3, 5, 7, 4, 6, 8))
-  })
-
-
-
-
-
-  #Registeringer per enhet----
-  output$tabell_id <- shiny::renderTable({
-    data <- ForlopsOversikt %>%
-      dplyr::filter(HovedDato >= input$dato_id[1] & HovedDato <= input$dato_id[2]) %>%
-      dplyr::filter(ForlopsType1Num %in% input$forlopstype) %>%
-      dplyr::filter(BasisRegStatus %in% input$regstatus) %>%
-      dplyr::select("SykehusNavn", "ForlopsType1") %>%
-      table() %>%
-      addmargins() %>%
-      as.data.frame.matrix() %>%
-      tidyr::as_tibble(rownames = "Enhet")
-
-
-
-
-  }, digits = 0)
+  norspis::admtab_server("admtabell", SkjemaOversikt, ForlopsOversikt)
 
   # Eksempelrapport
   output$exReport <- shiny::renderUI({

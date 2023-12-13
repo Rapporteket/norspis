@@ -30,6 +30,7 @@ admtab_ui <- function(id) {
       shiny::tags$hr(),
       shiny::actionButton(ns("reset_input"), "Nullstill valg")
     ),
+
     shiny::mainPanel(
       shiny::tabsetPanel(
         id= ns("admtabeller"),
@@ -39,6 +40,9 @@ admtab_ui <- function(id) {
                         shiny::br(),
                         shiny::br(),
                         DT::DTOutput(ns("Tabell_adm1"))
+        ),
+        shiny::tabPanel("Registreringer per enhet", value = "id_pr_enhet",
+          shiny::tableOutput(ns("tabell_id"))
         )
       )
     )
@@ -48,7 +52,7 @@ admtab_ui <- function(id) {
 
 #' @rdname admtab
 #' @export
-admtab_server <- function(id, skjemaoversikt) {
+admtab_server <- function(id, skjemaoversikt, ForlopsOversikt) {
 
   moduleServer(id, function(input, output, session) {
 
@@ -58,7 +62,8 @@ admtab_server <- function(id, skjemaoversikt) {
       names(forlopstyper) <- skjemaoversikt$ForlopsType1[match(forlopstyper, skjemaoversikt$ForlopsType1Num)]
       names(forlopstyper)[forlopstyper==0] <- "Ingen"
       selectInput(inputId = ns("forlopstype"), label = "Velg forløpstype(r)",
-                  choices = forlopstyper, multiple = T, selected = 1)
+                  choices = forlopstyper, multiple = T,
+                  selected = c(3, 5, 7, 4, 6, 8))
     })
 
     antskjema <- function() {
@@ -99,7 +104,18 @@ admtab_server <- function(id, skjemaoversikt) {
       )
     )
 
-
+    #Registeringer per enhet----
+    output$tabell_id <- shiny::renderTable({
+      data <- ForlopsOversikt %>%
+        dplyr::filter(HovedDato >= input$datovalg[1] & HovedDato <= input$datovalg[2]) %>%
+        dplyr::filter(ForlopsType1Num %in% input$forlopstype) %>%
+        dplyr::filter(BasisRegStatus %in% input$regstatus) %>%
+        dplyr::select("SykehusNavn", "ForlopsType1") %>%
+        table() %>%
+        addmargins() %>%
+        as.data.frame.matrix() %>%
+        tidyr::as_tibble(rownames = "Enhet")
+    }, digits = 0)
 
 
   })

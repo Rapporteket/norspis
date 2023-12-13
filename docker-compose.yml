@@ -5,6 +5,8 @@ services:
     image: mysql:5.7
     command: --innodb-log-file-size=500M --innodb_strict_mode=0
     restart: "no"
+    volumes:
+      - ~/softlinks/mysql_db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
 
@@ -15,6 +17,9 @@ services:
     volumes:
       - ~/.ssh:/home/rstudio/.ssh
       - ~/.gitconfig:/home/rstudio/.gitconfig
+      - ~/GIT/norspis:/home/rstudio/norspis
+      - ~/GIT/norspis2:/home/rstudio/norspis2
+      - ~/softlinks/mydata:/home/rstudio/mydata
     ports:
       - "8787:8787"
       - "3838:3838"
