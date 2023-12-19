@@ -26,7 +26,8 @@ Imports:
     magrittr,
     shiny,
     rapbase,
-    rlang
+    rlang,
+    janitor
 Remotes:
     Rapporteket/rapbase@*release,
 Suggests: 

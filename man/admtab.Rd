@@ -9,7 +9,7 @@
 \usage{
 admtab_ui(id)
 
-admtab_server(id, skjemaoversikt)
+admtab_server(id, skjemaoversikt, ForlopsOversikt)
 
 admtab_demo()
 }
