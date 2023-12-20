@@ -151,6 +151,122 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
     tittel <- c("Andelen som rapporterer Klar bedring",  "eller Ikke noe problem lenger (BU)")
   }
 
+  if (ind_id == "norspis_involvering_famlie_venner_BU") {
+
+    Indikator <- RegData %>%
+      filter(!is.na(PT02BleInvolv) & PT02BleInvolv!= 9,
+             !Over18_start) %>%
+      mutate(year = format(RegHendelsesdato_slutt, "%Y") %>% as.numeric(),
+             var = PT02BleInvolv,
+             denominator = 1) %>%
+      select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
+      rename(SykehusNavn = Kortnavn) %>%
+      mutate(ind_id = ind_id,
+             context = "caregiver")
+    maal <- 100
+    tittel <- c("Andelen som rapporterer at familie og/eller",  "venner ble involvert i behandlingen (BU)")
+  }
+
+  if (ind_id == "norspis_involvering_famlie_venner_V") {
+
+    Indikator <- RegData %>%
+      filter(PT01OnsketInvolv == 1,
+             !is.na(PT02BleInvolv) & PT02BleInvolv != 9,
+             Over18_start) %>%
+      mutate(year = format(RegHendelsesdato_slutt, "%Y") %>% as.numeric(),
+             var = PT02BleInvolv,
+             denominator = 1) %>%
+      select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
+      rename(SykehusNavn = Kortnavn) %>%
+      mutate(ind_id = ind_id,
+             context = "caregiver")
+    maal <- 100
+    tittel <- c("Andelen som rapporterer at familie og/eller",  "venner ble involvert i behandlingen (V)")
+  }
+
+  if (ind_id == "norspis_undervekt_prodprove") {
+
+    Indikator <- RegData %>%
+      mutate(bmi = ifelse(!is.na(MedIsoBMIBGS_start),
+                          MedIsoBMIBGS_start, MedBMI_start)) %>%
+      filter(!is.na(bmi),
+             bmi < 18.5,
+             MedBlodprove_start %in% c(0,1)) %>%
+      mutate(var = MedBlodprove_start,
+             denominator = 1,
+             year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
+      select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
+      rename(SykehusNavn = Kortnavn) %>%
+      mutate(ind_id = ind_id,
+             context = "caregiver")
+    maal <- 90
+    tittel <- c("Andelen undervektige pasienter (BMI < 18,5) ved ", "start, der det er tatt blodprøver ved start.")
+  }
+
+  if (ind_id == "norspis_oppkast_prodprove") {
+
+    Indikator <- RegData %>%
+      filter(!is.na(EDE16GgrOppkast_start),
+             MedBlodprove_start %in% c(0,1)) %>%
+      mutate(var = MedBlodprove_start,
+             denominator = 1,
+             year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
+      select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
+      rename(SykehusNavn = Kortnavn) %>%
+      mutate(ind_id = ind_id,
+             context = "caregiver")
+    maal <- 90
+    tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start.")
+  }
+
+  if (ind_id == "norspis_beintetthetsmaling_V") {
+
+    Indikator <- RegData %>%
+      mutate(bmi = ifelse(!is.na(MedIsoBMIBGS_start),
+                          MedIsoBMIBGS_start, MedBMI_start),
+             BeintetthMaling = ifelse(MedBeintetthMaling_start == 1 |
+                                        MedBeintetthMaling_slutt == 1,
+                                      1, 0)) %>%
+      filter(Over18_start,
+             bmi < 18.5,
+             MedBeintetthMaling_start %in% 0:1 |
+               MedBeintetthMaling_slutt %in% 0:1) %>%
+      mutate(BeintetthMaling = ifelse(is.na(BeintetthMaling), 0, BeintetthMaling)) %>%
+      mutate(var = BeintetthMaling,
+             denominator = 1,
+             year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
+      select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
+      rename(SykehusNavn = Kortnavn) %>%
+      mutate(ind_id = ind_id,
+             context = "caregiver")
+    maal <- 90
+    tittel <- c("Andelen undervektige ved start der det", "oppgis at det er gjort en beintetthetsmåling (V)")
+  }
+
+  if (ind_id == "norspis_beintetthetsmaling_BU") {
+
+    Indikator <- RegData %>%
+      mutate(bmi = ifelse(!is.na(MedIsoBMIBGS_start),
+                          MedIsoBMIBGS_start, MedBMI_start),
+             BeintetthMaling = ifelse(MedBeintetthMaling_start == 1 |
+                                        MedBeintetthMaling_slutt == 1,
+                                      1, 0)) %>%
+      filter(!Over18_start,
+             bmi < 18.5,
+             MedBeintetthMaling_start %in% 0:1 |
+               MedBeintetthMaling_slutt %in% 0:1) %>%
+      mutate(BeintetthMaling = ifelse(is.na(BeintetthMaling), 0, BeintetthMaling)) %>%
+      mutate(var = BeintetthMaling,
+             denominator = 1,
+             year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
+      select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
+      rename(SykehusNavn = Kortnavn) %>%
+      mutate(ind_id = ind_id,
+             context = "caregiver")
+    maal <- 90
+    tittel <- c("Andelen undervektige ved start der det", "oppgis at det er gjort en beintetthetsmåling (BU)")
+  }
+
 
 
   indikatordata <- list(indikator=Indikator, tittel=tittel, terskel=terskel,
@@ -158,7 +274,6 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
                         pktStr=pktStr, legPlass=legPlass, minstekravTxt=minstekravTxt,
                         maalTxt=maalTxt, decreasing=decreasing,
                         width=width, height=height, maalretn=maalretn)
-
 
 
 }
