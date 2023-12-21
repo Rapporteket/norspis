@@ -12,27 +12,15 @@ appServer <- function(input, output, session) {
   rapbase::appLogger(session = session, msg = "Starting norspis application")
 
   # Last data
-  SkjemaOversikt <- norspis::querySkjemaOversikt("norspis")
-  ForlopsOversikt <- norspis::queryForlopsOversikt("norspis")
-  shusnavn <- queryReshNames("norspis")
-  SkjemaOversikt$shusnavn <-
-    shusnavn$shortName[match(SkjemaOversikt$AvdRESH, shusnavn$reshId)]
-  SkjemaOversikt$SkjemaRekkeflg[SkjemaOversikt$SkjemaRekkeflg==9] <- "5"
-  SkjemaOversikt$Skjemanavn <-
-    factor(SkjemaOversikt$Skjemanavn,
-           levels = SkjemaOversikt$Skjemanavn[
-             match(sort(as.numeric(unique(SkjemaOversikt$SkjemaRekkeflg))),
-                   SkjemaOversikt$SkjemaRekkeflg)])
-  SkjemaOversikt <-
-    merge(SkjemaOversikt, ForlopsOversikt[, c("ForlopsID", "ForlopsType1",
-                                              "ForlopsType1Num")],
-          by = "ForlopsID", all.x = T)
+  norspisdata <- norspis::norspisLesOgProsesser()
+  SkjemaOversikt <- norspisdata$SkjemaOversikt
+  ForlopsOversikt <- norspisdata$ForlopsOversikt
 
   registryName <- "norspis"
   userFullName <- rapbase::getUserFullName(session)
   userRole <- rapbase::getUserRole(session)
   userReshId <- rapbase::getUserReshId(session)
-  hospitalName <- shusnavn$shortName[match(userReshId, shusnavn$reshId)]
+  hospitalName <- ForlopsOversikt$Kortnavn[match(userReshId, ForlopsOversikt$AvdRESH)]
 
   rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
                               caller = "norspis")

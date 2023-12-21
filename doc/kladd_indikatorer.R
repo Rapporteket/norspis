@@ -99,6 +99,9 @@ RegData <- merge(RegData_start, RegData_slutt,
                  all.x = TRUE)
 
 
+RegData <- norspis::norspisLesOgProsesser()
+RegData <- RegData[match(unique(RegData$ForlopsID), RegData$ForlopsID), ]
+
 indikatordata <- norspisBeregnIndikator(RegData, ind_id = "norspis_involvering_famlie_venner_V")
 norspisPlotIndikator(indikatordata)
 

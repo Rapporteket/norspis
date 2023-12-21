@@ -71,11 +71,11 @@ admtab_server <- function(id, skjemaoversikt, ForlopsOversikt) {
         dplyr::filter(HovedDato >= input$datovalg[1] & HovedDato <= input$datovalg[2]) %>%
         dplyr::filter(SkjemaStatus %in% input$regstatus) %>%
         dplyr::filter(ForlopsType1Num %in% input$forlopstype) %>%
-        dplyr::select("shusnavn", "Skjemanavn") %>%
+        dplyr::select("Kortnavn", "Skjemanavn") %>%
         table() %>%
         addmargins(1) %>%
         as.data.frame.matrix() %>%
-        tidyr::as_tibble(rownames = "Sykehusnavn")
+        tidyr::as_tibble(rownames = "Enhet")
 
       sketch <- htmltools::withTags(table(
         DT::tableHeader(ant_skjema[-dim(ant_skjema)[1], ]),
@@ -110,7 +110,7 @@ admtab_server <- function(id, skjemaoversikt, ForlopsOversikt) {
         dplyr::filter(HovedDato >= input$datovalg[1] & HovedDato <= input$datovalg[2]) %>%
         dplyr::filter(ForlopsType1Num %in% input$forlopstype) %>%
         dplyr::filter(BasisRegStatus %in% input$regstatus) %>%
-        dplyr::select("SykehusNavn", "ForlopsType1") %>%
+        dplyr::select("Kortnavn", "ForlopsType1") %>%
         table() %>%
         addmargins() %>%
         as.data.frame.matrix() %>%
