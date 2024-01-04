@@ -23,6 +23,10 @@ appServer <- function(input, output, session) {
   userReshId <- rapbase::getUserReshId(session)
   hospitalName <- ForlopsOversikt$Kortnavn[match(userReshId, ForlopsOversikt$AvdRESH)]
 
+  if (userRole != 'SC') {
+    shiny::hideTab("tabs", target = "Verkt\u00f8y")
+  }
+
   rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
                               caller = "norspis")
 
