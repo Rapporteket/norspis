@@ -31,6 +31,10 @@ appServer <- function(input, output, session) {
                      RegData = RegData, userRole = userRole,
                      hvd_session = session)
 
+  # Datadump
+  norspis::datadump_server("datadump_id", reshID = userReshId,
+                  RegData = RegData, userRole = userRole, hvd_session = session)
+
   # Administrative tabeller
   norspis::admtab_server("admtabell", SkjemaOversikt, ForlopsOversikt)
 

@@ -27,7 +27,8 @@ Imports:
     shiny,
     rapbase,
     rlang,
-    janitor
+    janitor,
+    shinyjs
 Remotes:
     Rapporteket/rapbase@*release,
 Suggests: 

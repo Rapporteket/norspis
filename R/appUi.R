@@ -68,6 +68,10 @@ appUi <- function() {
         norspis::indikatorfig_UI(id = "indikatorfig_id")
       ),
 
+      shiny::tabPanel("Datadump",
+                      norspis::datadump_UI(id = "datadump_id")
+      ),
+
       shiny::tabPanel(
         "Administrative tabeller",
         norspis::admtab_ui("admtabell")
