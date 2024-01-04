@@ -6,6 +6,9 @@
 \usage{
 norspisLesOgProsesser()
 }
+\value{
+norspisdata En liste med registerdata i ulike former
+}
 \description{
 Leg nødvendige tabeller for Norspis og returner en utflatet dataramme
 }

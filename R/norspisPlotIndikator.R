@@ -9,21 +9,18 @@
 #' @export
 #'
 norspisPlotIndikator <- function(indikatordata, graaUt=NA, outfile = '',
-                              lavDG=NA, inkl_konf=F)
+                              lavDG=NA, inkl_konf=F, width=800,
+                              height=700, skriftStr=1.0, pktStr=1.4)
 {
   indikator=indikatordata$indikator
   tittel=indikatordata$tittel
   terskel=indikatordata$terskel
   minstekrav=indikatordata$minstekrav
   maal=indikatordata$maal
-  skriftStr=indikatordata$skriftStr
-  pktStr=indikatordata$pktStr
   legPlass=indikatordata$legPlass
   minstekravTxt=indikatordata$minstekravTxt
   maalTxt=indikatordata$maalTxt
   decreasing=indikatordata$decreasing
-  width=indikatordata$width
-  height=indikatordata$height
   maalretn=indikatordata$maalretn
 
   indikator <- indikator[indikator$year > max(indikator$year)-3, ] # behold bare siste 3 år

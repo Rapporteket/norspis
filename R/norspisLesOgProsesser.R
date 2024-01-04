@@ -62,7 +62,9 @@ norspisLesOgProsesser <- function() {
   RegData <- merge(RegData_start, RegData_slutt,
                    by.x = "ForlopsID", by.y = "RegTilhorendeStartReg",
                    suffixes = c("_start", "_slutt"),
-                   all.x = TRUE)
+                   all.x = TRUE) %>%
+    dplyr::mutate(StartAar = format(RegHendelsesdato_start, "%Y") %>% as.numeric(),
+                  SluttAar = format(RegHendelsesdato_slutt, "%Y") %>% as.numeric())
 
   ## Foreløpig, velg én sluttregistrering der det finnes flere
   RegData <- RegData[match(unique(RegData$ForlopsID), RegData$ForlopsID), ]

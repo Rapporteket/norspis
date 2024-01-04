@@ -15,6 +15,7 @@ appServer <- function(input, output, session) {
   norspisdata <- norspis::norspisLesOgProsesser()
   SkjemaOversikt <- norspisdata$SkjemaOversikt
   ForlopsOversikt <- norspisdata$ForlopsOversikt
+  RegData <- norspisdata$RegData
 
   registryName <- "norspis"
   userFullName <- rapbase::getUserFullName(session)
@@ -24,6 +25,11 @@ appServer <- function(input, output, session) {
 
   rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
                               caller = "norspis")
+
+  # Indikatorfigur
+  norspis::indikatorfigServer("indikatorfig_id",
+                     RegData = RegData, userRole = userRole,
+                     hvd_session = session)
 
   # Administrative tabeller
   norspis::admtab_server("admtabell", SkjemaOversikt, ForlopsOversikt)
