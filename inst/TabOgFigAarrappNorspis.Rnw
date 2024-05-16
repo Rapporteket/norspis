@@ -1,0 +1,143 @@
+\documentclass[a4paper]{article}
+\usepackage[norsk]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[pdftex, colorlinks, linkcolor=lysblaa, urlcolor=lysblaa]{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+% \usepackage{subfig}
+% \usepackage{pdfpages}
+% \usepackage{booktabs}
+% \usepackage{caption}
+% \usepackage{amssymb}
+% \usepackage[a4paper]{geometry}
+
+
+\title{Tabeller og figurer årsrapport Norspis}
+
+<<'initOpts',include=FALSE>>=
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_knit$set(root.dir = './')
+@
+
+
+<<LastData, include=FALSE, cache=FALSE>>=
+rm(list=ls())
+library(norspis)
+library(dplyr)
+library(tidyr)
+options(dplyr.summarise.inform = FALSE)
+
+rap_aar <- 2023
+
+norspisdata <- norspisLesOgProsesser()
+RegData <- norspisdata$RegData
+ForlopsOversikt <- norspisdata$ForlopsOversikt
+SkjemaOversikt <- norspisdata$SkjemaOversikt
+
+
+figstr <- 0.61
+tmp <- Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
+
+figfolder <- paste0("~/mydata/norspis/fig_aarsrapp2023/")
+if (!dir.exists(figfolder)) {
+  dir.create(figfolder)
+}
+tabfolder <- paste0("~/mydata/ethirgast/tab_aarsrapp2023/")
+if (!dir.exists(tabfolder)) {
+  dir.create(tabfolder)
+}
+@
+
+\begin{document}
+\maketitle
+
+Dette dokumentet inneholder noe oppsummerende statistikk for Norspis ifm. årsrapport.
+%
+% <<'Fig. ', include=FALSE, echo=FALSE, eval=T>>=
+%
+% @
+%
+%
+% \begin{figure}[ht]
+% \centering
+% \includegraphics[width=\Sexpr{figstr}\textwidth]{\Sexpr{figfolder}.pdf}
+% \caption{figurtekst her}
+% \end{figure}
+
+
+<<'Table: ', results='asis', echo=FALSE>>=
+
+rapportdata <-  RegData %>%
+  mutate(Kjonn = factor(erMann, levels = 0:1, labels = c("Kvinne", "Mann")),
+         Alder_kat = cut(PasientAlder_start, breaks = c(10,15,20,25,30,40,50,100)),
+         Alder_kat = recode(Alder_kat, "(50,100]"="50+"),
+         B01Sivilstatus = ifelse(is.na(B01Sivilstatus), 99, B01Sivilstatus),
+         Sivilstatus = factor(B01Sivilstatus, levels = c(1:5, 9, 99),
+                              labels = c('Enslig','Samboer','Gift','Skilt',
+                                         'Enke/enkemann','Annen', "Ikke reg.")),
+         B03Bosituasjon = case_when(
+           B03Bosituasjon %in% c(1,2,4,5) ~ 2,
+           B03Bosituasjon == 3 ~ 1,
+           B03Bosituasjon %in% c(6,9) ~ 9,
+         ),
+         Bostatus = ifelse(is.na(B03BostatusV1_4), B03Bosituasjon, B03BostatusV1_4),
+         Bostatus = ifelse(is.na(Bostatus), 9, Bostatus) %>%
+           factor(levels = c(1:3, 9), labels = c("Bor alene", "Bor med noen",
+                                                 "Bor på institusjon", "Ukjent"))
+         ) %>%
+  filter(StartAar <= rap_aar,
+         StartAar >= rap_aar-2) %>%
+  mutate(regtid = ifelse(StartAar == rap_aar, rap_aar, paste0(rap_aar-2, "-", rap_aar-1)))
+
+kjonn <- rapportdata %>%
+  summarise(n = n(),
+            .by = c(Kjonn, regtid)) %>%
+  pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+  mutate(andel1 = .[,2]/sum(.[,2])*100,
+         andel2 = .[,3]/sum(.[,3])*100) %>%
+  mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)
+
+
+alder <- rapportdata %>%
+  summarise(n = n(),
+            .by = c(Alder_kat, regtid)) %>%
+  pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+  mutate(andel1 = .[,2]/sum(.[,2])*100,
+         andel2 = .[,3]/sum(.[,3])*100) %>%
+  arrange(Alder_kat) %>%
+  mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)
+
+sivilstatus <- rapportdata %>%
+  summarise(n = n(),
+            .by = c(Sivilstatus, regtid)) %>%
+  pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+  mutate(andel1 = .[,2]/sum(.[,2])*100,
+         andel2 = .[,3]/sum(.[,3])*100) %>%
+  arrange(Sivilstatus) %>%
+  mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)
+
+bostatus <- rapportdata %>%
+  summarise(n = n(),
+            .by = c(Bostatus, regtid)) %>%
+  pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+  mutate(andel1 = .[,2]/sum(.[,2])*100,
+         andel2 = .[,3]/sum(.[,3])*100) %>%
+  arrange(Bostatus) %>%
+  mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)
+
+
+print(xtable::xtable(reg_overview, digits=0,
+                     caption='Registration by registration status'),
+      include.rownames=FALSE)
+
+@
+
+
+
+
+
+\end{document}

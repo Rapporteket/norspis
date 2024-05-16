@@ -69,6 +69,8 @@ norspisLesOgProsesser <- function() {
   ## Foreløpig, velg én sluttregistrering der det finnes flere
   RegData <- RegData[match(unique(RegData$ForlopsID), RegData$ForlopsID), ]
   ##########################################################################
+  RegData <- merge(RegData, ForlopsOversikt[, c("ForlopsID", "erMann", "Norsktalende",
+                                                 "Sivilstatus", "UtdanningSSB")])
 
 
   SkjemaOversikt <- norspis::querySkjemaOversikt("norspis") %>%
