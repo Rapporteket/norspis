@@ -109,6 +109,9 @@ norspisPlotIndikator <- function(indikatordata, graaUt=NA, outfile = '',
   } else {
     xmax <- min(100, 1.15*max(andeler[,-1], na.rm = T))
   }
+  if (!is.na(maal)) {
+    xmax <- min(100, max(1.15*maal, xmax), na.rm = T)
+  }
 
   ypos <- barplot( t(andeler[,dim(andeler)[2]]), beside=T, las=1,
                    xlim=c(0,xmax),
