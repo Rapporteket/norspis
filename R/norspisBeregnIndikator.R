@@ -190,8 +190,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
                     context = "caregiver")
     maal <- 100
     tittel <- c("Andelen som rapporterer at familie og/eller",
-                "venner ble involvert i behandlingen,",
-                "av pasientene som ønsket involvering (BU).")
+                "venner ble involvert i behandlingen (BU)")
   }
 
   if (ind_id == "norspis_involvering_famlie_venner_V") {
@@ -253,23 +252,6 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
     tittel <- c("Andelen undervektige pasienter (BMI < 18,5) ved ", "start, der det er tatt blodprøver ved start (BU).")
   }
 
-  if (ind_id == "norspis_oppkast_prodprove") {
-
-    Indikator <- RegData %>%
-      dplyr::filter(!is.na(EDE16GgrOppkast_start),
-                    EDE16GgrOppkast_start >= 32,
-                    MedBlodprove_start %in% c(0,1)) %>%
-      dplyr::mutate(var = MedBlodprove_start,
-                    denominator = 1,
-                    year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
-      dplyr::select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
-      dplyr::rename(SykehusNavn = Kortnavn) %>%
-      dplyr::mutate(ind_id = ind_id,
-                    context = "caregiver")
-    maal <- 90
-    tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start.")
-  }
-
   if (ind_id == "norspis_oppkast_prodprove_V") {
 
     Indikator <- RegData %>%
@@ -284,7 +266,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::rename(SykehusNavn = Kortnavn) %>%
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
-    maal <- 90
+    maal <- 100
     tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start (V).")
   }
 
@@ -302,7 +284,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::rename(SykehusNavn = Kortnavn) %>%
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
-    maal <- 90
+    maal <- 100
     tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start (BU).")
   }
 
@@ -350,7 +332,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::rename(SykehusNavn = Kortnavn) %>%
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
-    maal <- 90
+    maal <- NA
     tittel <- c("Andelen undervektige ved start der det", "oppgis at det er gjort en beintetthetsmåling (BU)")
   }
 

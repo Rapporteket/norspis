@@ -25,7 +25,6 @@ indikatorfig_UI <- function(id){
                     "Familie/venner involvert i behandlingen, barn/ungdom" = "norspis_involvering_famlie_venner_BU",
                     "Blodprøver ved start, undervektige, voksne" = "norspis_undervekt_prodprove_V",
                     "Blodprøver ved start, undervektige, barn/ungdom" = "norspis_undervekt_prodprove_BU",
-                    "Blodprøver ved start, oppkast" = "norspis_oppkast_prodprove",
                     "Blodprøver ved start, oppkast, voksne" = "norspis_oppkast_prodprove_V",
                     "Blodprøver ved start, oppkast, barn/ungdom" = "norspis_oppkast_prodprove_BU",
                     "Beintetthetsmåling ved start, undervektige voksne" = "norspis_beintetthetsmaling_V",
