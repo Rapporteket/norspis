@@ -176,7 +176,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
     tittel <- c("Andelen som rapporterer \"Klar bedring\"",  "eller \"Ikke noe problem lenger\" (BU)")
   }
 
-  if (ind_id == "norspis_involvering_famlie_venner_BU") {
+  if (ind_id == "norspis_involvering_familie_venner_BU") {
 
     Indikator <- RegData %>%
       dplyr::filter(!is.na(PT02BleInvolv) & PT02BleInvolv!= 9,
@@ -193,7 +193,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
                 "venner ble involvert i behandlingen (BU)")
   }
 
-  if (ind_id == "norspis_involvering_famlie_venner_V") {
+  if (ind_id == "norspis_involvering_familie_venner_V") {
 
     Indikator <- RegData %>%
       dplyr::filter(PT01OnsketInvolv == 1,
@@ -212,7 +212,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
                 "av pasientene som ønsket involvering (V).")
   }
 
-  if (ind_id == "norspis_undervekt_prodprove_V") {
+  if (ind_id == "norspis_undervekt_blodprove_V") {
 
     Indikator <- RegData %>%
       dplyr::mutate(bmi = ifelse(!is.na(MedIsoBMIBGS_start),
@@ -232,7 +232,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
     tittel <- c("Andelen undervektige pasienter (BMI < 18,5) ved ", "start, der det er tatt blodprøver ved start (V).")
   }
 
-  if (ind_id == "norspis_undervekt_prodprove_BU") {
+  if (ind_id == "norspis_undervekt_blodprove_BU") {
 
     Indikator <- RegData %>%
       dplyr::mutate(bmi = ifelse(!is.na(MedIsoBMIBGS_start),
@@ -252,7 +252,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
     tittel <- c("Andelen undervektige pasienter (BMI < 18,5) ved ", "start, der det er tatt blodprøver ved start (BU).")
   }
 
-  if (ind_id == "norspis_oppkast_prodprove_V") {
+  if (ind_id == "norspis_oppkast_blodprove_V") {
 
     Indikator <- RegData %>%
       dplyr::filter(!is.na(EDE16GgrOppkast_start),
@@ -270,7 +270,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
     tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start (V).")
   }
 
-  if (ind_id == "norspis_oppkast_prodprove_BU") {
+  if (ind_id == "norspis_oppkast_blodprove_BU") {
 
     Indikator <- RegData %>%
       dplyr::filter(!is.na(EDE16GgrOppkast_start),

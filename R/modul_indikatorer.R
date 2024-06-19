@@ -21,12 +21,12 @@ indikatorfig_UI <- function(id){
                     "Endring i undervektsstatus, barn/ungdom" = "norspis_KI3_undervektsreduksjon_BU",
                     "Utfallsvurdering, voksne" = "norspis_KI4_utfallsvurdering_V",
                     "Utfallsvurdering, barn/ungdom" = "norspis_KI4_utfallsvurdering_BU",
-                    "Familie/venner involvert i behandlingen, voksne" = "norspis_involvering_famlie_venner_V",
-                    "Familie/venner involvert i behandlingen, barn/ungdom" = "norspis_involvering_famlie_venner_BU",
-                    "Blodprøver ved start, undervektige, voksne" = "norspis_undervekt_prodprove_V",
-                    "Blodprøver ved start, undervektige, barn/ungdom" = "norspis_undervekt_prodprove_BU",
-                    "Blodprøver ved start, oppkast, voksne" = "norspis_oppkast_prodprove_V",
-                    "Blodprøver ved start, oppkast, barn/ungdom" = "norspis_oppkast_prodprove_BU",
+                    "Familie/venner involvert i behandlingen, voksne" = "norspis_involvering_familie_venner_V",
+                    "Familie/venner involvert i behandlingen, barn/ungdom" = "norspis_involvering_familie_venner_BU",
+                    "Blodprøver ved start, undervektige, voksne" = "norspis_undervekt_blodprove_V",
+                    "Blodprøver ved start, undervektige, barn/ungdom" = "norspis_undervekt_blodprove_BU",
+                    "Blodprøver ved start, oppkast, voksne" = "norspis_oppkast_blodprove_V",
+                    "Blodprøver ved start, oppkast, barn/ungdom" = "norspis_oppkast_blodprove_BU",
                     "Beintetthetsmåling ved start, undervektige voksne" = "norspis_beintetthetsmaling_V",
                     "Beintetthetsmåling ved start, undervektige barn/ungdom" = "norspis_beintetthetsmaling_BU"
         )
