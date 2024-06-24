@@ -49,6 +49,27 @@ Indikator <- merge(Indikator, norspis::resh_voksen_barn[, c("AvdRESH", "orgnr")]
   dplyr::select(orgnr, year, var, denominator, ind_id, context)
 
 
+DG2023 <- readxl::read_xls("~/mydata/norspis/NORSPIS - DG til sykehusveiviseren 2023.xls",
+                           sheet = 1, col_names = T) %>%
+  select(orgnr, year, Teller, Nevner) %>%
+  rename(var = Teller,
+         denominator = Nevner) %>%
+  filter(denominator != "-") %>%
+  mutate(ind_id = "norspis_dg",
+         context = "caregiver",
+         var = as.numeric(var),
+         denominator = as.numeric(denominator))
+
+DG_gml <- read.csv2("~/mydata/norspis/norspis_dg_gml.csv") %>%
+  dplyr::filter(ind_id == "norspis_dg")
+
+DG <- dplyr::bind_rows(DG_gml, DG2023)
+
+write.csv2(DG, "~/mydata/norspis/norspis_dg2023.csv", row.names = F)
+
+
+Indikator <- dplyr::bind_rows(Indikator, DG2023)
+
 write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
            row.names = F)
 
