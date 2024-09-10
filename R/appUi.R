@@ -34,33 +34,42 @@ appUi <- function() {
         )
       ),
 
-      shiny::tabPanel(
-        "Eksempelrapport",
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::radioButtons("formatReport",
-                                "Format for nedlasting",
-                                list(PDF = "pdf", HTML = "html"),
-                                inline = FALSE),
-            shiny::downloadButton("downloadReport", "Last ned!")
-          ),
-          shiny::mainPanel(
-            shiny::htmlOutput("exReport", inline = TRUE)
-          )
+      # shiny::tabPanel(
+      #   "Eksempelrapport",
+      #   shiny::sidebarLayout(
+      #     shiny::sidebarPanel(
+      #       shiny::radioButtons("formatReport",
+      #                           "Format for nedlasting",
+      #                           list(PDF = "pdf", HTML = "html"),
+      #                           inline = FALSE),
+      #       shiny::downloadButton("downloadReport", "Last ned!")
+      #     ),
+      #     shiny::mainPanel(
+      #       shiny::htmlOutput("exReport", inline = TRUE)
+      #     )
+      #
+      #   )
+      # ),
 
-        )
+      # shiny::tabPanel(
+      #   "Abonnement",
+      #   shiny::sidebarLayout(
+      #     shiny::sidebarPanel(
+      #       rapbase::autoReportInput("norspisSubscription")
+      #     ),
+      #     shiny::mainPanel(
+      #       rapbase::autoReportUI("norspisSubscription")
+      #     )
+      #   )
+      # ),
+
+      shiny::tabPanel(
+        "Indikatorer",
+        norspis::indikatorfig_UI(id = "indikatorfig_id")
       ),
 
-      shiny::tabPanel(
-        "Abonnement",
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            rapbase::autoReportInput("norspisSubscription")
-          ),
-          shiny::mainPanel(
-            rapbase::autoReportUI("norspisSubscription")
-          )
-        )
+      shiny::tabPanel("Datadump",
+                      norspis::datadump_UI(id = "datadump_id")
       ),
 
       shiny::tabPanel(
@@ -71,19 +80,19 @@ appUi <- function() {
       shiny::navbarMenu(
         "Verkt\u00f8y",
 
-        shiny::tabPanel(
-          "Utsending",
-          shiny::sidebarLayout(
-            shiny::sidebarPanel(
-              rapbase::autoReportFormatInput("norspisDispatchFormat"),
-              rapbase::autoReportOrgInput("norspisDispatchOrg"),
-              rapbase::autoReportInput("norspisDispatch")
-            ),
-            shiny::mainPanel(
-              rapbase::autoReportUI("norspisDispatch")
-            )
-          )
-        ),
+        # shiny::tabPanel(
+        #   "Utsending",
+        #   shiny::sidebarLayout(
+        #     shiny::sidebarPanel(
+        #       rapbase::autoReportFormatInput("norspisDispatchFormat"),
+        #       rapbase::autoReportOrgInput("norspisDispatchOrg"),
+        #       rapbase::autoReportInput("norspisDispatch")
+        #     ),
+        #     shiny::mainPanel(
+        #       rapbase::autoReportUI("norspisDispatch")
+        #     )
+        #   )
+        # ),
 
         shiny::tabPanel(
           "Bruksstatistikk",

@@ -1,0 +1,1008 @@
+\documentclass[a4paper]{article}
+\usepackage[norsk]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[pdftex, colorlinks, linkcolor=lysblaa, urlcolor=lysblaa]{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{array}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+% \usepackage{subfig}
+% \usepackage{pdfpages}
+% \usepackage{booktabs}
+% \usepackage{caption}
+% \usepackage{amssymb}
+% \usepackage[a4paper]{geometry}
+
+
+\title{Tabeller og figurer årsrapport Norspis}
+
+<<'initOpts',include=FALSE>>=
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_knit$set(root.dir = './')
+@
+
+
+<<LastData, include=FALSE, cache=FALSE>>=
+rm(list=ls())
+library(norspis)
+library(dplyr)
+library(tidyr)
+options(dplyr.summarise.inform = FALSE)
+
+rap_aar <- 2023
+
+norspisdata <- norspisLesOgProsesser()
+RegData <- norspisdata$RegData
+ForlopsOversikt <- norspisdata$ForlopsOversikt
+SkjemaOversikt <- norspisdata$SkjemaOversikt
+
+
+figstr <- 0.61
+tmp <- Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
+
+figfolder <- paste0("~/mydata/norspis/fig_aarsrapp2023/")
+if (!dir.exists(figfolder)) {
+  dir.create(figfolder)
+}
+tabfolder <- paste0("~/mydata/norspis/tab_aarsrapp2023/")
+if (!dir.exists(tabfolder)) {
+  dir.create(tabfolder)
+}
+@
+
+\begin{document}
+\maketitle
+
+Dette dokumentet inneholder noe oppsummerende statistikk for Norspis ifm. årsrapport.
+%
+% <<'Fig. ', include=FALSE, echo=FALSE, eval=T>>=
+%
+% @
+%
+%
+% \begin{figure}[ht]
+% \centering
+% \includegraphics[width=\Sexpr{figstr}\textwidth]{\Sexpr{figfolder}.pdf}
+% \caption{figurtekst her}
+% \end{figure}
+
+
+<<'Table: sosiodemografisk', results='asis', echo=FALSE>>=
+
+rapportdata <- RegData %>%
+  mutate(Kjonn = factor(erMann, levels = 0:1, labels = c("Kvinne", "Mann")),
+         Alder_kat = cut(PasientAlder_start, breaks = c(10,15,20,25,30,40,50,100)),
+         Alder_kat = recode(Alder_kat, "(50,100]"="50+"),
+         B01Sivilstatus = ifelse(is.na(B01Sivilstatus), 99, B01Sivilstatus),
+         Sivilstatus = factor(B01Sivilstatus, levels = c(1:5, 9, 99),
+                              labels = c('Enslig','Samboer','Gift','Skilt',
+                                         'Enke/enkemann','Annen', "Ikke reg.")),
+         B03Bosituasjon = case_when(
+           B03Bosituasjon %in% c(1,2,4,5) ~ 2,
+           B03Bosituasjon == 3 ~ 1,
+           B03Bosituasjon %in% c(6,9) ~ 9,
+         ),
+         Bostatus = ifelse(is.na(B03BostatusV1_4), B03Bosituasjon, B03BostatusV1_4),
+         Bostatus = ifelse(is.na(Bostatus), 9, Bostatus) %>%
+           factor(levels = c(1:3, 9), labels = c("Bor alene", "Bor med noen",
+                                                 "Bor på institusjon", "Ukjent")),
+         Egnebarn = ifelse(B02EgneBarn > 0, 1, 0),
+         Egnebarn = ifelse(is.na(Egnebarn), 99, Egnebarn),
+         Egnebarn = factor(Egnebarn, levels = c(0,1,99), labels = c("0", "1+", "Ikke reg.")),
+         B05FullfortUtd = ifelse(B05FullfortUtd %in% 1:5, B05FullfortUtd-1, B05FullfortUtd),
+         Utdanning = ifelse(is.na(B04UtdanningV1_4), B05FullfortUtd, B04UtdanningV1_4),
+         Utdanning = ifelse(is.na(Utdanning), 9, Utdanning),
+         Utdanning = factor(Utdanning, levels = c(0,1,2,3,4,9,99),
+                            labels = c("Ingen utdanning","Grunnskole","Videregående",
+                                       "Universitetet/Høgskole (mindre enn 4 år)",
+                                       "Universitet/Høgskole (4 år eller mer)","Ukjent",
+                                       "Spørsmål ikke stilt pga. pasient under 18")),
+         B06Hovedaktivitet = case_when(
+           B06Hovedaktivitet %in% 1:2 ~ 1,
+           B06Hovedaktivitet %in% c(3,7,8) ~ 2,
+           B06Hovedaktivitet %in% c(4,9) ~ 9,
+           B06Hovedaktivitet %in% 5:6 ~ 4
+         ),
+         Arbeidsstatus = ifelse(is.na(B06ArbeidsstatusV1_4), B06Hovedaktivitet, B06ArbeidsstatusV1_4),
+         Arbeidsstatus = ifelse(is.na(Arbeidsstatus), 9, Arbeidsstatus),
+         Arbeidsstatus = factor(Arbeidsstatus, levels = c(1,2,3,4,9),
+                                labels = c("I arbeid","Ikke i arbeid","Alderspensjonist",
+                                           "Under utdanning/studerer","Ukjent")),
+         B07Hovedinntekt =ifelse(is.na(B07Hovedinntekt), 9, B07Hovedinntekt),
+         Hovedinntekt = factor(B07Hovedinntekt, levels = c(1,2,3,4,5,6,7,9),
+                               labels = c("Arbeidsinntekt","Sykepenger/trygd/pensjon",
+                                          "Blir forsørget","Sosialhjelp", "Stipend/lån",
+                                          "Kursstønad/lønn i arbeidsmarkedstiltak",
+                                          "Andre inntekter","Ukjent")),
+         DiagBUAkse1 = toupper(DiagBUAkse1),
+         bmi = ifelse(!is.na(MedIsoBMIBGS_start),
+                      MedIsoBMIBGS_start, MedBMI_start),
+         bmi_kat = cut(bmi, breaks = c(0,10,12.5,15,17.5,20,25,30, 100)),
+         bmi_kat = case_match(bmi_kat, "(0,10]" ~ "<10", "(30,100]" ~ ">30", .default = bmi_kat),
+         bmi_slutt = ifelse(!is.na(MedIsoBMIBGS_slutt),
+                            MedIsoBMIBGS_slutt, MedBMI_slutt),
+         bmi_slutt_kat = cut(bmi_slutt, breaks = c(0,10,12.5,15,17.5,20,25,30, 100)),
+         bmi_slutt_kat = case_match(bmi_slutt_kat, "(0,10]" ~ "<10", "(30,100]" ~ ">30", .default = bmi_slutt_kat),
+  ) %>%
+  mutate(regtid = case_when(StartAar == rap_aar ~ as.character(rap_aar),
+                            StartAar %in% (rap_aar-2):(rap_aar-1) ~
+                              paste0(rap_aar-2, "-", rap_aar-1)),
+         regtid_slutt = case_when(SluttAar == rap_aar ~ as.character(rap_aar),
+                                  SluttAar %in% (rap_aar-2):(rap_aar-1) ~
+                                    paste0(rap_aar-2, "-", rap_aar-1))) #%>%
+# filter(StartAar <= rap_aar,
+#        StartAar >= rap_aar-2) #%>%
+# mutate(regtid = ifelse(StartAar == rap_aar, rap_aar, paste0(rap_aar-2, "-", rap_aar-1)))
+
+rapportdata_voksen <- rapportdata %>% filter(Over18_start)
+rapportdata_barn <- rapportdata %>% filter(!Over18_start)
+
+
+kjonn <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Kjonn, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+kjonn <- dplyr::full_join(
+  pivot_wider(kjonn, id_cols = Kjonn,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(kjonn, id_cols = Kjonn,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Kjonn", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Kjonn")
+
+
+alder <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Alder_kat, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+alder <- dplyr::full_join(
+  pivot_wider(alder, id_cols = Alder_kat,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(alder, id_cols = Alder_kat,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Alder_kat", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Alder_kat")
+
+
+sivilstatus <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Sivilstatus, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+sivilstatus <- dplyr::full_join(
+  pivot_wider(sivilstatus, id_cols = Sivilstatus,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(sivilstatus, id_cols = Sivilstatus,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Sivilstatus", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Sivilstatus")
+
+
+bostatus <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Bostatus, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+bostatus <- dplyr::full_join(
+  pivot_wider(bostatus, id_cols = Bostatus,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(bostatus, id_cols = Bostatus,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Bostatus", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Bostatus")
+
+egnebarn <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Egnebarn, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+egnebarn <- dplyr::full_join(
+  pivot_wider(egnebarn, id_cols = Egnebarn,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(egnebarn, id_cols = Egnebarn,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Egnebarn", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Egnebarn", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Egnebarn")
+
+utdanning <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Utdanning, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+utdanning <- dplyr::full_join(
+  pivot_wider(utdanning, id_cols = Utdanning,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(utdanning, id_cols = Utdanning,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Utdanning", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Utdanning", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Utdanning")
+
+arbeidsstatus <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Arbeidsstatus, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+arbeidsstatus <- dplyr::full_join(
+  pivot_wider(arbeidsstatus, id_cols = Arbeidsstatus,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(arbeidsstatus, id_cols = Arbeidsstatus,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Arbeidsstatus", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Arbeidsstatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Arbeidsstatus")
+
+
+hovedinntekt <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Hovedinntekt, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+hovedinntekt <- dplyr::full_join(
+  pivot_wider(hovedinntekt, id_cols = Hovedinntekt,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(hovedinntekt, id_cols = Hovedinntekt,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Hovedinntekt", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Hovedinntekt", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Hovedinntekt")
+
+
+
+sosio_voksen <- dplyr::bind_rows(kjonn,alder,sivilstatus,bostatus, egnebarn,
+                                 utdanning,arbeidsstatus, hovedinntekt)
+
+write.csv2(sosio_voksen, paste0(tabfolder, "sosio_voksen.csv"), row.names = F, fileEncoding = "Latin1")
+
+names(sosio_voksen) <- c("", "", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+
+print(xtable::xtable(sosio_voksen, digits=c(0,0,0,0,1,0,1),
+                     align = c('l', 'l','L{1.0in}', 'r', 'r', 'r', 'r'),
+                     caption='Sosiodemografiske data for voksne'),
+      include.rownames=FALSE)
+
+kjonn <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Kjonn, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+kjonn <- dplyr::full_join(
+  pivot_wider(kjonn, id_cols = Kjonn,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(kjonn, id_cols = Kjonn,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Kjonn", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Kjonn")
+
+
+alder <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Alder_kat, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+alder <- dplyr::full_join(
+  pivot_wider(alder, id_cols = Alder_kat,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(alder, id_cols = Alder_kat,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Alder_kat", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Alder_kat")
+
+
+sivilstatus <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Sivilstatus, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+sivilstatus <- dplyr::full_join(
+  pivot_wider(sivilstatus, id_cols = Sivilstatus,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(sivilstatus, id_cols = Sivilstatus,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Sivilstatus", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Sivilstatus")
+
+
+bostatus <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Bostatus, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+bostatus <- dplyr::full_join(
+  pivot_wider(bostatus, id_cols = Bostatus,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(bostatus, id_cols = Bostatus,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Bostatus", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Bostatus")
+
+egnebarn <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Egnebarn, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+egnebarn <- dplyr::full_join(
+  pivot_wider(egnebarn, id_cols = Egnebarn,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(egnebarn, id_cols = Egnebarn,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Egnebarn", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Egnebarn", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Egnebarn")
+
+utdanning <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Utdanning, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+utdanning <- dplyr::full_join(
+  pivot_wider(utdanning, id_cols = Utdanning,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(utdanning, id_cols = Utdanning,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Utdanning", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Utdanning", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Utdanning")
+
+arbeidsstatus <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Arbeidsstatus, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+arbeidsstatus <- dplyr::full_join(
+  pivot_wider(arbeidsstatus, id_cols = Arbeidsstatus,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(arbeidsstatus, id_cols = Arbeidsstatus,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Arbeidsstatus", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Arbeidsstatus", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Arbeidsstatus")
+
+
+hovedinntekt <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  dplyr::count(Hovedinntekt, regtid) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+hovedinntekt <- dplyr::full_join(
+  pivot_wider(hovedinntekt, id_cols = Hovedinntekt,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(hovedinntekt, id_cols = Hovedinntekt,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "Hovedinntekt", suffix = c("", " andel")) %>%
+  mutate(Variabel = c("Hovedinntekt", rep('', dim(.)[1]-1))) %>%
+  select(6,1,2,4,3,5)%>%
+  rename("Alternativer" = "Hovedinntekt")
+
+# kjonn <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Kjonn, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Kjonn")
+#
+#
+# alder <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Alder_kat, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Alder_kat) %>%
+#   mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Alder_kat")
+#
+# sivilstatus <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Sivilstatus, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Sivilstatus) %>%
+#   mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Sivilstatus")
+#
+# bostatus <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Bostatus, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Bostatus) %>%
+#   mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Bostatus")
+#
+# egnebarn <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Egnebarn, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Egnebarn) %>%
+#   mutate(Variabel = c("Egnebarn", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Egnebarn")
+#
+# utdanning <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Utdanning, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Utdanning) %>%
+#   mutate(Variabel = c("Utdanning", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Utdanning")
+#
+#
+# arbeidsstatus <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Arbeidsstatus, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Arbeidsstatus) %>%
+#   mutate(Variabel = c("Arbeidsstatus", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Arbeidsstatus")
+#
+#
+# hovedinntekt <- rapportdata_barn %>%
+#   filter(!is.na(regtid)) %>%
+#   summarise(n = n(),
+#             .by = c(Hovedinntekt, regtid)) %>%
+#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
+#   mutate(andel1 = .[,2]/sum(.[,2])*100,
+#          andel2 = .[,3]/sum(.[,3])*100) %>%
+#   arrange(Hovedinntekt) %>%
+#   mutate(Variabel = c("Hovedinntekt", rep('', dim(.)[1]-1))) %>%
+#   select(6,1,2,4,3,5) %>%
+#   rename("Alternativer" = "Hovedinntekt")
+
+
+sosio_barn <- dplyr::bind_rows(kjonn,alder,sivilstatus,bostatus, egnebarn,
+                               utdanning,arbeidsstatus, hovedinntekt)
+
+names(sosio_barn) <- c("", "", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+
+write.csv2(sosio_barn, paste0(tabfolder, "sosio_barn.csv"), row.names = F, fileEncoding = "Latin1")
+
+print(xtable::xtable(sosio_barn, digits=c(0,0,0,0,1,0,1),
+                     align = c('l', 'l','L{1.0in}', 'r', 'r', 'r', 'r'),
+                     caption='Sosiodemografiske data for barn'),
+      include.rownames=FALSE)
+
+@
+
+
+<<'Tabell: plaging', results='asis', echo=FALSE>>=
+
+
+fysiskmisshandling <- rapportdata_voksen %>%
+  filter(B17FysMishandl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B17FysMishandl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+psykiskmisshandling <- rapportdata_voksen %>%
+  filter(B18PsykMishandl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B18PsykMishandl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+overgrep <- rapportdata_voksen %>%
+  filter(B19Overgrep %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B19Overgrep),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+mobbing <- rapportdata_voksen %>%
+  filter(B20Mobbing %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B20Mobbing),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvskading_tidl <- rapportdata_voksen %>%
+  filter(B21SelvskadTidl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B21SelvskadTidl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvskading_sisteaar <- rapportdata_voksen %>%
+  filter(B22SelvskadSisteAr %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B22SelvskadSisteAr),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvmordforsok_tidl <- rapportdata_voksen %>%
+  filter(B23SelvmordFTidl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B23SelvmordFTidl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvmordforsok_sisteaar <- rapportdata_voksen %>%
+  filter(B24SelvmordFSisteAr %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B24SelvmordFSisteAr),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+avhengighet <- rapportdata_voksen %>%
+  filter(B25Avhengighet %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B25Avhengighet),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+
+Tabell_plaging_voksen <- bind_rows(
+  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4])),
+  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Psykisk mishandling", cbind(psykiskmisshandling[1,2:4], psykiskmisshandling[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Misbruk/overgrep", cbind(overgrep[1,2:4], overgrep[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Mobbing", cbind(mobbing[1,2:4], mobbing[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Selvskading (>1 år siden)", cbind(selvskading_tidl[1,2:4], selvskading_tidl[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Selvskading siste år", cbind(selvskading_sisteaar[1,2:4], selvskading_sisteaar[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Selvmordsforsøk (>1 år)", cbind(selvmordforsok_tidl[1,2:4], selvmordforsok_tidl[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Selvmordsforsøk siste år", cbind(selvmordforsok_sisteaar[1,2:4], selvmordforsok_sisteaar[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Misbruk/avhengighet rusmidler/medikamenter", cbind(avhengighet[1,2:4], avhengighet[2,2:4])))
+
+
+
+fysiskmisshandling <- rapportdata_barn %>%
+  filter(B17FysMishandl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B17FysMishandl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+psykiskmisshandling <- rapportdata_barn %>%
+  filter(B18PsykMishandl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B18PsykMishandl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+overgrep <- rapportdata_barn %>%
+  filter(B19Overgrep %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B19Overgrep),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+mobbing <- rapportdata_barn %>%
+  filter(B20Mobbing %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B20Mobbing),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvskading_tidl <- rapportdata_barn %>%
+  filter(B21SelvskadTidl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B21SelvskadTidl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvskading_sisteaar <- rapportdata_barn %>%
+  filter(B22SelvskadSisteAr %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B22SelvskadSisteAr),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvmordforsok_tidl <- rapportdata_barn %>%
+  filter(B23SelvmordFTidl %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B23SelvmordFTidl),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+selvmordforsok_sisteaar <- rapportdata_barn %>%
+  filter(B24SelvmordFSisteAr %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B24SelvmordFSisteAr),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+avhengighet <- rapportdata_barn %>%
+  filter(B25Avhengighet %in% 0:1,
+         !is.na(regtid)) %>%
+  summarise(antall = sum(B25Avhengighet),
+            N = n(),
+            andel = antall/N*100,
+            .by = c(regtid))
+
+
+Tabell_plaging_barn <- bind_rows(
+  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4])),
+  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Psykisk mishandling", cbind(psykiskmisshandling[1,2:4], psykiskmisshandling[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Misbruk/overgrep", cbind(overgrep[1,2:4], overgrep[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Mobbing", cbind(mobbing[1,2:4], mobbing[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Selvskading (>1 år siden)", cbind(selvskading_tidl[1,2:4], selvskading_tidl[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Selvskading siste år", cbind(selvskading_sisteaar[1,2:4], selvskading_sisteaar[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Selvmordsforsøk (>1 år)", cbind(selvmordforsok_tidl[1,2:4], selvmordforsok_tidl[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Selvmordsforsøk siste år", cbind(selvmordforsok_sisteaar[1,2:4], selvmordforsok_sisteaar[2,2:4]))) %>%
+  bind_rows(
+    data.frame(Variabelnavn = "Misbruk/avhengighet rusmidler/medikamenter", cbind(avhengighet[1,2:4], avhengighet[2,2:4])))
+
+write.csv2(Tabell_plaging_voksen, paste0(tabfolder, "negative_hendelser_voksen.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(Tabell_plaging_barn, paste0(tabfolder, "negative_hendelser_barn.csv"),
+           row.names = F, fileEncoding = "Latin1")
+
+
+names(Tabell_plaging_voksen) <- c("", "Antall 2021-2022", "N 2021-2022", "Andel 2021-2022",
+                                  "Antall 2023", "N 2023", "Andel 2023")
+
+print(xtable::xtable(Tabell_plaging_voksen, digits=c(0,0,0,0,1,0,0,1),
+                     align = c('l', 'L{1.0in}', 'R{0.7in}', 'R{0.6in}', 'R{0.7in}', 'R{0.7in}','R{0.6in}','R{0.7in}'),
+                     caption='Negative hendelser mm. voksen'),
+      include.rownames=FALSE)
+
+names(Tabell_plaging_barn) <- c("", "Antall 2021-2022", "N 2021-2022", "Andel 2021-2022",
+                                "Antall 2023", "N 2023", "Andel 2023")
+
+print(xtable::xtable(Tabell_plaging_barn, digits=c(0,0,0,0,1,0,0,1),
+                     align = c('l', 'L{1.0in}', 'R{0.7in}', 'R{0.6in}', 'R{0.7in}', 'R{0.7in}','R{0.6in}','R{0.7in}'),
+                     caption='Negative hendelser mm. barn'),
+      include.rownames=FALSE)
+
+@
+
+
+<<'Tabell: diagnoser', results='asis', echo=FALSE>>=
+
+rapportdata_barn <- bind_cols(
+  rapportdata_barn,
+  norspis::separer(
+    rapportdata_barn$DiagBUAkse1,
+    unique_varnames = c("F500", "F501", "F502", "F503", "F504",
+                        "F505", "F508", "F509", "F982", "F983")))
+
+rapportdata_barn <- rapportdata_barn %>%
+  mutate(F500 = ifelse(F500 | DiagVSF == "F500", TRUE, FALSE),
+         F501 = ifelse(F501 | DiagVSF == "F501", TRUE, FALSE),
+         F502 = ifelse(F502 | DiagVSF == "F502", TRUE, FALSE),
+         F503 = ifelse(F503 | DiagVSF == "F503", TRUE, FALSE),
+         F504 = ifelse(F504 | DiagVSF == "F504", TRUE, FALSE),
+         F505 = ifelse(F505 | DiagVSF == "F505", TRUE, FALSE),
+         F508 = ifelse(F508 | DiagVSF == "F508", TRUE, FALSE),
+         F509 = ifelse(F509 | DiagVSF == "F509", TRUE, FALSE),
+         F982 = ifelse(F982 | DiagVSF == "F982", TRUE, FALSE),
+         F983 = ifelse(F983 | DiagVSF == "F983", TRUE, FALSE))
+
+diagnoser_barn <- rapportdata_barn %>%
+  filter(!is.na(regtid_slutt)) %>%
+  summarise(
+    "F50.0 Anorexia nervosa" = sum(F500, na.rm = TRUE),
+    "F50.1 Atypisk anorexia nervosa" = sum(F501, na.rm = TRUE),
+    "F50.2 Bulimia nervosa" = sum(F502, na.rm = TRUE),
+    "F50.3 Atypisk bulimia nervosa" = sum(F503, na.rm = TRUE),
+    "F50.4 Overspising forbundet med andre psykiske lidelser" = sum(F504, na.rm = TRUE),
+    "F50.5 Oppkast forbundet med andre psykiske lidelser" = sum(F505, na.rm = TRUE),
+    "F50.8 Andre spesifiserte spiseforstyrrelser" = sum(F508, na.rm = TRUE),
+    "F50.9 Uspesifisert spiseforstyrrelse" = sum(F509, na.rm = TRUE),
+    "F98.2 Spiseforstyrrelse i barndommen" = sum(F982, na.rm = TRUE),
+    "F98.3 Pica i spedbarns- og barnealder" = sum(F983, na.rm = TRUE),
+    .by = c(regtid_slutt)
+  ) %>%
+  tr_summarize_output(kolnavn1 = "Diagnoser (ICD-10)") %>%
+  filter(`2021-2022` != 0 | `2023` !=0)
+
+
+diagnoser_voksne <- rapportdata_voksen %>%
+  filter(!is.na(regtid_slutt)) %>%
+  select(DiagVSF, regtid_slutt) %>%
+  table(useNA = 'ifany') %>%
+  as_tibble() %>% pivot_wider(names_from = regtid_slutt, values_from = n) %>%
+  filter(DiagVSF %in% c("F500", "F501", "F502", "F503", "F504",
+                        "F505", "F508", "F509", "F982", "F983")) %>%
+  mutate(DiagVSF = case_match(DiagVSF,
+                              "F500" ~ "F50.0 Anorexia nervosa",
+                              "F501" ~ "F50.1 Atypisk anorexia nervosa",
+                              "F502" ~ "F50.2 Bulimia nervosa",
+                              "F503" ~ "F50.3 Atypisk bulimia nervosa",
+                              "F504" ~ "F50.4 Overspising forbundet med andre psykiske lidelser",
+                              "F505" ~ "F50.5 Oppkast forbundet med andre psykiske lidelser",
+                              "F508" ~ "F50.8 Andre spesifiserte spiseforstyrrelser",
+                              "F509" ~ "F50.9 Uspesifisert spiseforstyrrelse",
+                              "F982" ~ "F98.2 Spiseforstyrrelse i barndommen",
+                              "F983" ~ "F98.3 Pica i spedbarns- og barnealder",
+  )) %>%
+  rename("Diagnoser (ICD-10)" = DiagVSF)
+
+
+print(xtable::xtable(diagnoser_barn, digits=0,
+                     align = c('l', 'L{1.2in}', 'r', 'r'),
+                     caption='Diagnoser barn'),
+      include.rownames=FALSE)
+
+print(xtable::xtable(diagnoser_voksne, digits=0,
+                     align = c('l', 'L{1.2in}', 'r', 'r'),
+                     caption='Diagnoser voksne'),
+      include.rownames=FALSE)
+
+write.csv2(diagnoser_barn, paste0(tabfolder, "diagnoser_barn.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(diagnoser_voksne, paste0(tabfolder, "diagnoser_voksne.csv"),
+           row.names = F, fileEncoding = "Latin1")
+
+@
+
+
+<<'Tabell: BMI', results='asis', echo=FALSE>>=
+
+tmp <- rapportdata_barn %>%
+  mutate(bmi_kat = factor(bmi_kat,
+                          levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
+                                     "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
+  filter(!is.na(bmi_kat),
+         !is.na(regtid)) %>%
+  count(bmi_kat, regtid, .drop = FALSE) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+bmi_start_barn <- dplyr::full_join(
+  pivot_wider(tmp, id_cols = bmi_kat,
+              names_from = regtid, values_from = n, values_fill = 0) %>%
+    select(-2),
+  pivot_wider(tmp, id_cols = bmi_kat,
+              names_from = regtid, values_from = andel, values_fill = 0) %>%
+    select(-2),
+  by = "bmi_kat", suffix = c("", " andel")) %>%
+  select(1,2,4,3,5) %>%
+  rename("BMI" = "bmi_kat")
+
+
+tmp <- rapportdata_barn %>%
+  mutate(bmi_slutt_kat = factor(bmi_slutt_kat,
+                          levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
+                                     "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
+  filter(!is.na(bmi_slutt_kat),
+         !is.na(regtid_slutt)) %>%
+  count(bmi_slutt_kat, regtid_slutt, .drop = FALSE) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid_slutt)
+bmi_slutt_barn <- dplyr::full_join(
+  pivot_wider(tmp, id_cols = bmi_slutt_kat,
+              names_from = regtid_slutt, values_from = n, values_fill = 0) %>%
+    select(-2),
+  pivot_wider(tmp, id_cols = bmi_slutt_kat,
+              names_from = regtid_slutt, values_from = andel, values_fill = 0) %>%
+    select(-2),
+  by = "bmi_slutt_kat", suffix = c("", " andel")) %>%
+  select(1,2,4,3,5) %>%
+  rename("BMI" = "bmi_slutt_kat")
+
+tmp <- rapportdata_voksen %>%
+  mutate(bmi_kat = factor(bmi_kat,
+                          levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
+                                     "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
+  filter(!is.na(bmi_kat),
+         !is.na(regtid)) %>%
+  count(bmi_kat, regtid, .drop = FALSE) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid)
+bmi_start_voksen <- dplyr::full_join(
+  pivot_wider(tmp, id_cols = bmi_kat,
+              names_from = regtid, values_from = n, values_fill = 0),
+  pivot_wider(tmp, id_cols = bmi_kat,
+              names_from = regtid, values_from = andel, values_fill = 0),
+  by = "bmi_kat", suffix = c("", " andel")) %>%
+  select(1,2,4,3,5) %>%
+  rename("BMI" = "bmi_kat")
+
+
+tmp <- rapportdata_voksen %>%
+  mutate(bmi_slutt_kat = factor(bmi_slutt_kat,
+                          levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
+                                     "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
+  filter(!is.na(bmi_slutt_kat),
+         !is.na(regtid_slutt)) %>%
+  count(bmi_slutt_kat, regtid_slutt, .drop = FALSE) %>%
+  mutate(andel = n/sum(n)*100, .by = regtid_slutt)
+bmi_slutt_voksen <- dplyr::full_join(
+  pivot_wider(tmp, id_cols = bmi_slutt_kat,
+              names_from = regtid_slutt, values_from = n, values_fill = 0) %>%
+    select(-2),
+  pivot_wider(tmp, id_cols = bmi_slutt_kat,
+              names_from = regtid_slutt, values_from = andel, values_fill = 0) %>%
+    select(-2),
+  by = "bmi_slutt_kat", suffix = c("", " andel")) %>%
+  select(1,2,4,3,5) %>%
+  rename("BMI" = "bmi_slutt_kat")
+
+
+
+write.csv2(bmi_start_barn, paste0(tabfolder, "bmi_start_barn.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(bmi_slutt_barn, paste0(tabfolder, "bmi_slutt_barn.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(bmi_start_voksen, paste0(tabfolder, "bmi_start_voksen.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(bmi_slutt_voksen, paste0(tabfolder, "bmi_slutt_voksen.csv"),
+           row.names = F, fileEncoding = "Latin1")
+
+names(bmi_start_barn) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+names(bmi_slutt_barn) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+names(bmi_start_voksen) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+names(bmi_slutt_voksen) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+
+print(xtable::xtable(bmi_start_barn, digits=c(0,0,0,1,0,1),
+                     align = c('l', 'l', 'r', 'r', 'r', 'r'),
+                     caption='Kroppsmasseindeks (BMI) ved start for barn'),
+      include.rownames=FALSE)
+
+print(xtable::xtable(bmi_slutt_barn, digits=c(0,0,0,1,0,1),
+                     align = c('l', 'l', 'r', 'r', 'r', 'r'),
+                     caption='Kroppsmasseindeks (BMI) ved slutt for barn'),
+      include.rownames=FALSE)
+
+print(xtable::xtable(bmi_start_voksen, digits=c(0,0,0,1,0,1),
+                     align = c('l', 'l', 'r', 'r', 'r', 'r'),
+                     caption='Kroppsmasseindeks (BMI) ved start for voksne'),
+      include.rownames=FALSE)
+
+print(xtable::xtable(bmi_slutt_voksen, digits=c(0,0,0,1,0,1),
+                     align = c('l', 'l', 'r', 'r', 'r', 'r'),
+                     caption='Kroppsmasseindeks (BMI) ved slutt for voksne'),
+      include.rownames=FALSE)
+
+@
+
+
+
+<<'Tabell: Medikamentell behandling', results='asis', echo=FALSE>>=
+
+medikament_barn_start <- rapportdata_barn %>%
+  filter(!is.na(regtid)) %>%
+  summarise(
+    "Psykofarmakologisk behandling" = sum(MedPsykofarmaka_start, na.rm = TRUE),
+    "Antidepressiva" = sum(MedAntidepressiva_start, na.rm = TRUE),
+    "Benzodiazepiner" = sum(MedBenzodiazepiner_start, na.rm = TRUE),
+    "Nevroleptika" = sum(MedNevroleptika_start, na.rm = TRUE),
+    "Annen medikamentell behandling" = sum(MedAnnenMedBeh_start, na.rm = TRUE),
+    N = sum(MedPsykofarmaka_start %in% 0:1),
+    .by = c(regtid)
+  ) %>%
+  tr_summarize_output(kolnavn1 = "Medikamentell behandling") #%>%
+# filter(`2021-2022` != 0 | `2023` !=0)
+
+
+medikament_barn_slutt <- rapportdata_barn %>%
+  filter(!is.na(regtid_slutt)) %>%
+  summarise(
+    "Psykofarmakologisk behandling" = sum(MedPsykofarmaka_slutt, na.rm = TRUE),
+    "Antidepressiva" = sum(MedAntidepressiva_slutt, na.rm = TRUE),
+    "Benzodiazepiner" = sum(MedBenzodiazepiner_slutt, na.rm = TRUE),
+    "Nevroleptika" = sum(MedNevroleptika_slutt, na.rm = TRUE),
+    "Annen medikamentell behandling" = sum(MedAnnenMedBeh_slutt, na.rm = TRUE),
+    N = sum(MedPsykofarmaka_start %in% 0:1),
+    .by = c(regtid_slutt)
+  ) %>%
+  tr_summarize_output(kolnavn1 = "Medikamentell behandling")
+
+
+medikament_voksen_start <- rapportdata_voksen %>%
+  filter(!is.na(regtid)) %>%
+  summarise(
+    "Psykofarmakologisk behandling" = sum(MedPsykofarmaka_start, na.rm = TRUE),
+    "Antidepressiva" = sum(MedAntidepressiva_start, na.rm = TRUE),
+    "Benzodiazepiner" = sum(MedBenzodiazepiner_start, na.rm = TRUE),
+    "Nevroleptika" = sum(MedNevroleptika_start, na.rm = TRUE),
+    "Annen medikamentell behandling" = sum(MedAnnenMedBeh_start, na.rm = TRUE),
+    N = sum(MedPsykofarmaka_start %in% 0:1),
+    .by = c(regtid)
+  ) %>%
+  tr_summarize_output(kolnavn1 = "Medikamentell behandling") #%>%
+# filter(`2021-2022` != 0 | `2023` !=0)
+
+
+medikament_voksen_slutt <- rapportdata_voksen %>%
+  filter(!is.na(regtid_slutt)) %>%
+  summarise(
+    "Psykofarmakologisk behandling" = sum(MedPsykofarmaka_slutt, na.rm = TRUE),
+    "Antidepressiva" = sum(MedAntidepressiva_slutt, na.rm = TRUE),
+    "Benzodiazepiner" = sum(MedBenzodiazepiner_slutt, na.rm = TRUE),
+    "Nevroleptika" = sum(MedNevroleptika_slutt, na.rm = TRUE),
+    "Annen medikamentell behandling" = sum(MedAnnenMedBeh_slutt, na.rm = TRUE),
+    N = sum(MedPsykofarmaka_start %in% 0:1),
+    .by = c(regtid_slutt)
+  ) %>%
+  tr_summarize_output(kolnavn1 = "Medikamentell behandling")
+
+
+
+print(xtable::xtable(medikament_barn_start, digits=0,
+                     align = c('l', 'l', 'r', 'r'),
+                     caption='Medikamentell behandling ved start for barn'),
+      include.rownames=FALSE)
+
+
+print(xtable::xtable(medikament_barn_slutt, digits=0,
+                     align = c('l', 'l', 'r', 'r'),
+                     caption='Medikamentell behandling ved slutt for barn'),
+      include.rownames=FALSE)
+
+print(xtable::xtable(medikament_voksen_start, digits=0,
+                     align = c('l', 'l', 'r', 'r'),
+                     caption='Medikamentell behandling ved start for voksne'),
+      include.rownames=FALSE)
+
+
+print(xtable::xtable(medikament_voksen_slutt, digits=0,
+                     align = c('l', 'l', 'r', 'r'),
+                     caption='Medikamentell behandling ved slutt for voksne'),
+      include.rownames=FALSE)
+
+
+write.csv2(medikament_barn_start, paste0(tabfolder, "medikament_barn_start.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(medikament_barn_slutt, paste0(tabfolder, "medikament_barn_slutt.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(medikament_voksen_start, paste0(tabfolder, "medikament_voksen_start.csv"),
+           row.names = F, fileEncoding = "Latin1")
+write.csv2(medikament_voksen_slutt, paste0(tabfolder, "medikament_voksen_slutt.csv"),
+           row.names = F, fileEncoding = "Latin1")
+
+
+@
+
+
+\end{document}

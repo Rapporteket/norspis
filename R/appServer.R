@@ -15,6 +15,7 @@ appServer <- function(input, output, session) {
   norspisdata <- norspis::norspisLesOgProsesser()
   SkjemaOversikt <- norspisdata$SkjemaOversikt
   ForlopsOversikt <- norspisdata$ForlopsOversikt
+  RegData <- norspisdata$RegData
 
   registryName <- "norspis"
   userFullName <- rapbase::getUserFullName(session)
@@ -22,8 +23,21 @@ appServer <- function(input, output, session) {
   userReshId <- rapbase::getUserReshId(session)
   hospitalName <- ForlopsOversikt$Kortnavn[match(userReshId, ForlopsOversikt$AvdRESH)]
 
+  if (userRole != 'SC') {
+    shiny::hideTab("tabs", target = "Verkt\u00f8y")
+  }
+
   rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
                               caller = "norspis")
+
+  # Indikatorfigur
+  norspis::indikatorfigServer("indikatorfig_id",
+                     RegData = RegData, userRole = userRole,
+                     hvd_session = session)
+
+  # Datadump
+  norspis::datadump_server("datadump_id", reshID = userReshId,
+                  RegData = RegData, userRole = userRole, hvd_session = session)
 
   # Administrative tabeller
   norspis::admtab_server("admtabell", SkjemaOversikt, ForlopsOversikt)

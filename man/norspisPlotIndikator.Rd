@@ -9,7 +9,11 @@ norspisPlotIndikator(
   graaUt = NA,
   outfile = "",
   lavDG = NA,
-  inkl_konf = F
+  inkl_konf = F,
+  width = 800,
+  height = 700,
+  skriftStr = 1,
+  pktStr = 1.4
 )
 }
 \arguments{

@@ -22,3 +22,57 @@ binomkonf <- function(n, N, konfnivaa=0.95)
   }
   return(invisible(binkonf))
 }
+
+
+#' Trekk ut diagnoser fra kolonne med kommaseparerte diagnoser til separate
+#' kolonner
+#'
+#' @param variable - kolonnen som skal splittes i flere
+#' @param separator - separator mellom elementer i tekststreng. Overflødig hvis
+#'                    unique_varnames gis som input
+#' @param unique_varnames - vektor med navnene som skal trekkes ut i nye kolonner, må/bør
+#'                    samsvare med navn som eksisterer i kolonnen som skal splittes
+#'
+#' @return En dataramme med separerte variabler
+#'
+#' @export
+separer <- function(variable, separator = ",", unique_varnames = NULL) {
+  if (is.null(unique_varnames)){
+    unique_varnames <- stringi::stri_split_fixed(variable[!is.na(variable)], separator) %>%
+      unlist() %>% unique()
+  }
+  df <- lapply(
+    unique_varnames,
+    function(x, variable){
+      stringr::str_detect(variable,x)
+    },
+    variable
+  )
+
+  df <- as.data.frame.list(df)
+  names(df) <- unique_varnames
+  return(df)
+}
+
+
+#' Transponer output fra dplyr::summarise
+#'
+#' Denne funksjonen tar som input resultatet av dplyr::summarise og returnerer dens
+#' transponerte uten at formatene endres.
+#'
+#' Her kan detaljer skrives
+#'
+#' @return tr_frame Den transponerte av inputen
+#'
+#' @export
+#'
+tr_summarize_output <- function(x, kolnavn1 = ""){
+
+  rekkefolge <- names(x)[-1]
+  y <- x %>% gather(names(x)[-1], key=nokkel, value = verdi) %>%
+    spread(key=names(x)[1], value = verdi)
+  y <- y[match(rekkefolge, y$nokkel), ]
+  names(y)[1] <- kolnavn1
+
+  return(y)
+}
