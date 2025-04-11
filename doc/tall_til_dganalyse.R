@@ -25,7 +25,7 @@ NorSpisEnkeltLeddNum <-
 #READ 3
 #PID, SSN
 NorSpisKoblingstabell <-
-  read.table("C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/NorSpis_koblingstabell_datadump_25.03.2025.csv",
+  read.table("C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/NorSpis_koblingstabell_datadump_11.04.2025.csv",
              sep=';',
              header=T, encoding = 'UTF-8', stringsAsFactors = FALSE, fill = TRUE,
              col.names = c("PID", "SSN") , #variables to read
