@@ -49,7 +49,7 @@ koblingsfil <- NorSpisKoblingstabell |>
   dplyr::filter(PID %in% NorSpisEnkeltLeddNum_JOINED$PasientID)
 
 write.csv2(koblingsfil,
-           file ="C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/koblingsfil.csv",
+           file ="C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/koblingsfil_norspis.csv",
            row.names = FALSE)
 
 
@@ -68,6 +68,6 @@ aktivitetsdata <- NorSpisEnkeltLeddNum_JOINED %>%
 
 #WRITE FILE 2:
 write.csv2(aktivitetsdata,
-           file ="C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/aktivitetsdata.csv",
+           file ="C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/aktivitetsdata_norspis.csv",
            row.names = FALSE) #excludes first row
 
