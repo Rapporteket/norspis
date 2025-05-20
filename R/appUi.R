@@ -30,7 +30,8 @@ appUi <- function() {
             system.file("veiledning.Rmd", package = "norspis"),
             outputType = "html_fragment"
           ),
-          rapbase::navbarWidgetInput("norspisNavbarWidget")
+          rapbase::navbarWidgetInput("norspisNavbarWidget",
+                                     selectOrganization = TRUE)
         )
       ),
 

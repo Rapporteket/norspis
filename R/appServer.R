@@ -10,34 +10,46 @@
 appServer <- function(input, output, session) {
 
   rapbase::appLogger(session = session, msg = "Starting norspis application")
+  rapbase::logShinyInputChanges(input)
 
   # Last data
   norspisdata <- norspis::norspisLesOgProsesser()
   SkjemaOversikt <- norspisdata$SkjemaOversikt
   ForlopsOversikt <- norspisdata$ForlopsOversikt
   RegData <- norspisdata$RegData
+  map_avdeling <- data.frame(
+    UnitId = unique(RegData$AvdRESH),
+    orgname = RegData$SykehusNavn[match(unique(RegData$AvdRESH),
+                                        RegData$AvdRESH)])
+
+  user <- rapbase::navbarWidgetServer2(
+    "norspisNavbarWidget",
+    orgName = "norspis",
+    caller = "norspis",
+    map_orgname = shiny::req(map_avdeling)
+  )
 
   registryName <- "norspis"
-  userFullName <- rapbase::getUserFullName(session)
-  userRole <- rapbase::getUserRole(session)
-  userReshId <- rapbase::getUserReshId(session)
-  hospitalName <- ForlopsOversikt$Kortnavn[match(userReshId, ForlopsOversikt$AvdRESH)]
+  hospitalName <- shiny::reactive(
+    ForlopsOversikt$Kortnavn[match(shiny::req(user$org), ForlopsOversikt$AvdRESH)])
 
-  if (userRole != 'SC') {
-    shiny::hideTab("tabs", target = "Verkt\u00f8y")
-  }
-
-  rapbase::navbarWidgetServer("norspisNavbarWidget", "norspis",
-                              caller = "norspis")
+  shiny::observeEvent(user$role(), {
+    if (user$role() != 'SC') {
+      shiny::hideTab("tabs", target = "Verkt\u00f8y")
+    }
+    if (user$role() == 'SC') {
+      shiny::showTab("tabs", target = "Verkt\u00f8y")
+    }
+  })
 
   # Indikatorfigur
   norspis::indikatorfigServer("indikatorfig_id",
-                     RegData = RegData, userRole = userRole,
+                     RegData = RegData, userRole = user$role,
                      hvd_session = session)
 
   # Datadump
-  norspis::datadump_server("datadump_id", reshID = userReshId,
-                  RegData = RegData, userRole = userRole, hvd_session = session)
+  norspis::datadump_server("datadump_id", reshID = user$org,
+                  RegData = RegData, userRole = user$role, hvd_session = session)
 
   # Administrative tabeller
   norspis::admtab_server("admtabell", SkjemaOversikt, ForlopsOversikt)
@@ -48,12 +60,12 @@ appServer <- function(input, output, session) {
       system.file("eksSamlerapport.Rmd", package = "norspis"),
       outputType = "html_fragment",
       params = list(
-        author = userFullName,
-        hospitalName = hospitalName,
+        author = user$fullName(),
+        hospitalName = hospitalName(),
         tableFormat = "html",
-        reshId = userReshId,
+        reshId = user$org(),
         registryName = registryName,
-        userRole = userRole
+        userRole = user$role()
       )
     )
   })
@@ -68,13 +80,13 @@ appServer <- function(input, output, session) {
         system.file("eksSamlerapport.Rmd", package = "norspis"),
         outputType = input$formatReport,
         params = list(
-          author = userFullName,
-          hospitalName = hospitalName,
+          author = user$fullName(),
+          hospitalName = hospitalName(),
           tableFormat = input$formatReport,
-          reshId = userReshId,
+          reshId = user$org(),
           registryName = registryName,
-          userFullName = userFullName,
-          userRole = userRole
+          userFullName = user$fullName(),
+          userRole = user$role()
         )
       )
       file.rename(fn, file)
@@ -82,43 +94,43 @@ appServer <- function(input, output, session) {
   )
 
 
-
-  # dummy report and orgs to subscribe and dispatch
-  orgs <- list(
-    TestOrg = 999999
-  )
-  report <- list(
-    Veiledning = list(
-      synopsis = "Testrapport kun for illustrasjon",
-      fun = "reportProcessor",
-      paramNames = c("report", "outputFormat", "title"),
-      paramValues = c("veiledning", "pdf", "Testrapport")
-    ),
-    Eksempelrapport = list(
-      synopsis = "Eksempelrapport med data fra NorSpis",
-      fun = "reportProcessor",
-      paramNames = c("report", "outputFormat", "title"),
-      paramValues = c("eksSamlerapport", "pdf", "Eksempelrapport")
-    )
-  )
-
-  # subscribe
-  rapbase::autoReportServer(
-    "norspisSubscription", registryName = registryName, type = "subscription",
-    reports = report, orgs = orgs
-  )
-
-  # dispatch
-  org <- rapbase::autoReportOrgServer("norspisDispatchOrg", orgs)
-  fileFormat <- rapbase::autoReportFormatServer("norspisDispatchFormat")
-  paramNames <- shiny::reactive(c("outputFormat"))
-  paramValues <- shiny::reactive(c(fileFormat()))
-  rapbase::autoReportServer(
-    "norspisDispatch", registryName = registryName, type = "dispatchment",
-    org = org$value,
-    paramNames = paramNames, paramValues = paramValues, reports = report,
-    orgs = orgs
-  )
+#
+#   # dummy report and orgs to subscribe and dispatch
+#   orgs <- list(
+#     TestOrg = 999999
+#   )
+#   report <- list(
+#     Veiledning = list(
+#       synopsis = "Testrapport kun for illustrasjon",
+#       fun = "reportProcessor",
+#       paramNames = c("report", "outputFormat", "title"),
+#       paramValues = c("veiledning", "pdf", "Testrapport")
+#     ),
+#     Eksempelrapport = list(
+#       synopsis = "Eksempelrapport med data fra NorSpis",
+#       fun = "reportProcessor",
+#       paramNames = c("report", "outputFormat", "title"),
+#       paramValues = c("eksSamlerapport", "pdf", "Eksempelrapport")
+#     )
+#   )
+#
+#   # subscribe
+#   rapbase::autoReportServer(
+#     "norspisSubscription", registryName = registryName, type = "subscription",
+#     reports = report, orgs = orgs
+#   )
+#
+#   # dispatch
+#   org <- rapbase::autoReportOrgServer("norspisDispatchOrg", orgs)
+#   fileFormat <- rapbase::autoReportFormatServer("norspisDispatchFormat")
+#   paramNames <- shiny::reactive(c("outputFormat"))
+#   paramValues <- shiny::reactive(c(fileFormat()))
+#   rapbase::autoReportServer(
+#     "norspisDispatch", registryName = registryName, type = "dispatchment",
+#     org = org$value,
+#     paramNames = paramNames, paramValues = paramValues, reports = report,
+#     orgs = orgs
+#   )
 
   # use stats
   rapbase::statsServer("norspisStats", registryName = registryName)
