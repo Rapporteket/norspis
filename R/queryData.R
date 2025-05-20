@@ -23,10 +23,10 @@ NULL
 #' @export
 queryAlleScorer <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM AlleScorer;"
+  query <- "SELECT * FROM allescorer;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load AlleScorer data from ", registryName, ": ", query)
+    msg = paste0("Load allescorer data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
@@ -38,10 +38,10 @@ queryAlleScorer <- function(registryName, reshId, ...) {
 #' @export
 queryBehandling <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM Behandling;"
+  query <- "SELECT * FROM behandling;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load Behandling data from ", registryName, ": ", query)
+    msg = paste0("Load behandling data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
@@ -53,10 +53,10 @@ queryBehandling <- function(registryName, reshId, ...) {
 #' @export
 queryBehandlingNum <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM BehandlingNum;"
+  query <- "SELECT * FROM behandlingnum;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load BehandlingNum data from ", registryName, ": ", query)
+    msg = paste0("Load behandlingnum data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
@@ -68,10 +68,10 @@ queryBehandlingNum <- function(registryName, reshId, ...) {
 #' @export
 queryEnkeltLedd <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM EnkeltLedd;"
+  query <- "SELECT * FROM enkeltledd;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load EnkeltLedd data from ", registryName, ": ", query)
+    msg = paste0("Load enkeltledd data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
@@ -83,10 +83,10 @@ queryEnkeltLedd <- function(registryName, reshId, ...) {
 #' @export
 queryEnkeltLeddNum <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM EnkeltLeddNum;"
+  query <- "SELECT * FROM enkeltleddnum;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load EnkeltLeddNum data from ", registryName, ": ", query)
+    msg = paste0("Load enkeltleddnum data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
@@ -98,10 +98,10 @@ queryEnkeltLeddNum <- function(registryName, reshId, ...) {
 #' @export
 queryForlopsOversikt <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM ForlopsOversikt;"
+  query <- "SELECT * FROM forlopsoversikt;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load ForlopsOversikt data from ", registryName, ": ", query)
+    msg = paste0("Load forlopsoversikt data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 
@@ -119,7 +119,7 @@ SELECT
   Sykehusnavn AS name,
   SykehusKort AS shortName
 FROM
-  Brukerliste
+  brukerliste
 GROUP BY
   AvdRESH,
   SykehusKort,
@@ -138,10 +138,10 @@ GROUP BY
 #' @export
 querySkjemaOversikt <- function(registryName, reshId, ...) {
 
-  query <- "SELECT * FROM SkjemaOversikt;"
+  query <- "SELECT * FROM skjemaoversikt;"
 
   if ("session" %in% names(list(...))) {
-    msg = paste0("Load SkjemaOversikt data from ", registryName, ": ", query)
+    msg = paste0("Load skjemaoversikt data from ", registryName, ": ", query)
     rapbase::repLogger(session = list(...)[["session"]], msg)
   }
 

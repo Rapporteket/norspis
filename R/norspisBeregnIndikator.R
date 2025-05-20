@@ -32,7 +32,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 50
-    tittel <- c("Andelen med klinisk signifikant",  "bedring i spiseforstyrrelsessymptomer (V)")
+    tittel <- c("Andelen med bedring",  "i spiseforstyrrelsessymptomer (V)")
   }
 
   if (ind_id == "norspis_KI1_symptomreduksjon_EDEQ_BU") {
@@ -51,7 +51,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 70
-    tittel <- c("Andelen med klinisk signifikant",  "bedring i spiseforstyrrelsessymptomer (BU)")
+    tittel <- c("Andelen med bedring",  "i spiseforstyrrelsessymptomer (BU)")
   }
 
 
@@ -114,7 +114,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 60
-    tittel <- c("Andelen med endring av undervektstatus",  "til ikke undervektig ved slutt (V)")
+    tittel <- c("Andelen med undervekt ved start",  "som oppnår BMI \u2265 18.5 (V)")
   }
 
   if (ind_id == "norspis_KI3_undervektsreduksjon_BU") {
@@ -136,7 +136,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 60
-    tittel <- c("Andelen med endring av undervektstatus",  "til ikke undervektig ved slutt (BU)")
+    tittel <- c("Andelen med undervekt ved start",  "som oppnår Iso-BMI \u2265 18.5 (BU)")
   }
 
 
@@ -229,7 +229,8 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 90
-    tittel <- c("Andelen undervektige pasienter (BMI < 18,5) ved ", "start, der det er tatt blodprøver ved start (V).")
+    tittel <- c("Andelen med undervekt ved start (BMI < 18,5)",
+                "der det er tatt blodprøver ved start (V).")
   }
 
   if (ind_id == "norspis_undervekt_blodprove_BU") {
@@ -249,7 +250,8 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 90
-    tittel <- c("Andelen undervektige pasienter (BMI < 18,5) ved ", "start, der det er tatt blodprøver ved start (BU).")
+    tittel <- c("Andelen med undervekt ved start (Iso-BMI < 18,5)",
+                "der det er tatt blodprøver ved start (BU).")
   }
 
   if (ind_id == "norspis_oppkast_blodprove_V") {
@@ -267,7 +269,8 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 100
-    tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start (V).")
+    tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved",
+                "start, der det er tatt blodprøver ved start (V).")
   }
 
   if (ind_id == "norspis_oppkast_blodprove_BU") {
@@ -285,7 +288,8 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 100
-    tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved", "start, der det er tatt blodprøver ved start (BU).")
+    tittel <- c("Andelen med alvorlig eller ekstremt oppkast ved",
+                "start, der det er tatt blodprøver ved start (BU).")
   }
 
   if (ind_id == "norspis_beintetthetsmaling_V") {
@@ -309,7 +313,8 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- 90
-    tittel <- c("Andelen undervektige ved start der det", "oppgis at det er gjort en beintetthetsmåling (V)")
+    tittel <- c("Andelen undervektige ved start der det",
+                "er gjort en beintetthetsmåling (V)")
   }
 
   if (ind_id == "norspis_beintetthetsmaling_BU") {
@@ -333,7 +338,8 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(ind_id = ind_id,
                     context = "caregiver")
     maal <- NA
-    tittel <- c("Andelen undervektige ved start der det", "oppgis at det er gjort en beintetthetsmåling (BU)")
+    tittel <- c("Andelen undervektige ved start der det",
+                "er gjort en beintetthetsmåling (BU)")
   }
 
 

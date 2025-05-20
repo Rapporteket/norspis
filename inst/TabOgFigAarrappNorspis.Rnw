@@ -31,7 +31,7 @@ library(dplyr)
 library(tidyr)
 options(dplyr.summarise.inform = FALSE)
 
-rap_aar <- 2023
+rap_aar <- 2024
 
 norspisdata <- norspisLesOgProsesser()
 RegData <- norspisdata$RegData
@@ -42,11 +42,11 @@ SkjemaOversikt <- norspisdata$SkjemaOversikt
 figstr <- 0.61
 tmp <- Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
 
-figfolder <- paste0("~/mydata/norspis/fig_aarsrapp2023/")
+figfolder <- paste0("C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/aarsrapp/fig_aarsrapp2024/")
 if (!dir.exists(figfolder)) {
   dir.create(figfolder)
 }
-tabfolder <- paste0("~/mydata/norspis/tab_aarsrapp2023/")
+tabfolder <- paste0("C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/aarsrapp/tab_aarsrapp2024/")
 if (!dir.exists(tabfolder)) {
   dir.create(tabfolder)
 }
@@ -120,11 +120,14 @@ rapportdata <- RegData %>%
          bmi = ifelse(!is.na(MedIsoBMIBGS_start),
                       MedIsoBMIBGS_start, MedBMI_start),
          bmi_kat = cut(bmi, breaks = c(0,10,12.5,15,17.5,20,25,30, 100)),
-         bmi_kat = case_match(bmi_kat, "(0,10]" ~ "<10", "(30,100]" ~ ">30", .default = bmi_kat),
+         bmi_kat = case_match(bmi_kat, "(0,10]" ~ "<10", "(30,100]" ~ ">30",
+                              .default = bmi_kat),
          bmi_slutt = ifelse(!is.na(MedIsoBMIBGS_slutt),
                             MedIsoBMIBGS_slutt, MedBMI_slutt),
          bmi_slutt_kat = cut(bmi_slutt, breaks = c(0,10,12.5,15,17.5,20,25,30, 100)),
-         bmi_slutt_kat = case_match(bmi_slutt_kat, "(0,10]" ~ "<10", "(30,100]" ~ ">30", .default = bmi_slutt_kat),
+         bmi_slutt_kat = case_match(bmi_slutt_kat,
+                                    "(0,10]" ~ "<10", "(30,100]" ~ ">30",
+                                    .default = bmi_slutt_kat),
   ) %>%
   mutate(regtid = case_when(StartAar == rap_aar ~ as.character(rap_aar),
                             StartAar %in% (rap_aar-2):(rap_aar-1) ~
@@ -149,7 +152,7 @@ kjonn <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(kjonn, id_cols = Kjonn,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Kjonn", suffix = c("", " andel")) %>%
+  by = "Kjonn", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Kjonn")
@@ -164,7 +167,7 @@ alder <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(alder, id_cols = Alder_kat,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Alder_kat", suffix = c("", " andel")) %>%
+  by = "Alder_kat", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Alder_kat")
@@ -179,7 +182,7 @@ sivilstatus <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(sivilstatus, id_cols = Sivilstatus,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Sivilstatus", suffix = c("", " andel")) %>%
+  by = "Sivilstatus", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Sivilstatus")
@@ -194,7 +197,7 @@ bostatus <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(bostatus, id_cols = Bostatus,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Bostatus", suffix = c("", " andel")) %>%
+  by = "Bostatus", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Bostatus")
@@ -208,7 +211,7 @@ egnebarn <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(egnebarn, id_cols = Egnebarn,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Egnebarn", suffix = c("", " andel")) %>%
+  by = "Egnebarn", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Egnebarn", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Egnebarn")
@@ -222,7 +225,7 @@ utdanning <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(utdanning, id_cols = Utdanning,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Utdanning", suffix = c("", " andel")) %>%
+  by = "Utdanning", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Utdanning", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Utdanning")
@@ -236,7 +239,7 @@ arbeidsstatus <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(arbeidsstatus, id_cols = Arbeidsstatus,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Arbeidsstatus", suffix = c("", " andel")) %>%
+  by = "Arbeidsstatus", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Arbeidsstatus", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Arbeidsstatus")
@@ -251,7 +254,7 @@ hovedinntekt <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(hovedinntekt, id_cols = Hovedinntekt,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Hovedinntekt", suffix = c("", " andel")) %>%
+  by = "Hovedinntekt", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Hovedinntekt", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Hovedinntekt")
@@ -263,7 +266,8 @@ sosio_voksen <- dplyr::bind_rows(kjonn,alder,sivilstatus,bostatus, egnebarn,
 
 write.csv2(sosio_voksen, paste0(tabfolder, "sosio_voksen.csv"), row.names = F, fileEncoding = "Latin1")
 
-names(sosio_voksen) <- c("", "", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+# names(sosio_voksen) <- c("", "", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+names(sosio_voksen)[1:2] <- c("", "")
 
 print(xtable::xtable(sosio_voksen, digits=c(0,0,0,0,1,0,1),
                      align = c('l', 'l','L{1.0in}', 'r', 'r', 'r', 'r'),
@@ -279,7 +283,7 @@ kjonn <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(kjonn, id_cols = Kjonn,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Kjonn", suffix = c("", " andel")) %>%
+  by = "Kjonn", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Kjonn")
@@ -294,7 +298,7 @@ alder <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(alder, id_cols = Alder_kat,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Alder_kat", suffix = c("", " andel")) %>%
+  by = "Alder_kat", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Alder_kat")
@@ -309,7 +313,7 @@ sivilstatus <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(sivilstatus, id_cols = Sivilstatus,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Sivilstatus", suffix = c("", " andel")) %>%
+  by = "Sivilstatus", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Sivilstatus")
@@ -324,7 +328,7 @@ bostatus <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(bostatus, id_cols = Bostatus,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Bostatus", suffix = c("", " andel")) %>%
+  by = "Bostatus", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Bostatus")
@@ -338,7 +342,7 @@ egnebarn <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(egnebarn, id_cols = Egnebarn,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Egnebarn", suffix = c("", " andel")) %>%
+  by = "Egnebarn", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Egnebarn", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Egnebarn")
@@ -352,7 +356,7 @@ utdanning <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(utdanning, id_cols = Utdanning,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Utdanning", suffix = c("", " andel")) %>%
+  by = "Utdanning", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Utdanning", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Utdanning")
@@ -366,7 +370,7 @@ arbeidsstatus <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(arbeidsstatus, id_cols = Arbeidsstatus,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Arbeidsstatus", suffix = c("", " andel")) %>%
+  by = "Arbeidsstatus", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Arbeidsstatus", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Arbeidsstatus")
@@ -381,114 +385,16 @@ hovedinntekt <- dplyr::full_join(
               names_from = regtid, values_from = n, values_fill = 0),
   pivot_wider(hovedinntekt, id_cols = Hovedinntekt,
               names_from = regtid, values_from = andel, values_fill = 0),
-  by = "Hovedinntekt", suffix = c("", " andel")) %>%
+  by = "Hovedinntekt", suffix = c(" antall", " andel")) %>%
   mutate(Variabel = c("Hovedinntekt", rep('', dim(.)[1]-1))) %>%
   select(6,1,2,4,3,5)%>%
   rename("Alternativer" = "Hovedinntekt")
 
-# kjonn <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Kjonn, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   mutate(Variabel = c("Kjønn", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Kjonn")
-#
-#
-# alder <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Alder_kat, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Alder_kat) %>%
-#   mutate(Variabel = c("Alder", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Alder_kat")
-#
-# sivilstatus <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Sivilstatus, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Sivilstatus) %>%
-#   mutate(Variabel = c("Sivilstatus", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Sivilstatus")
-#
-# bostatus <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Bostatus, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Bostatus) %>%
-#   mutate(Variabel = c("Bostatus", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Bostatus")
-#
-# egnebarn <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Egnebarn, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Egnebarn) %>%
-#   mutate(Variabel = c("Egnebarn", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Egnebarn")
-#
-# utdanning <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Utdanning, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Utdanning) %>%
-#   mutate(Variabel = c("Utdanning", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Utdanning")
-#
-#
-# arbeidsstatus <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Arbeidsstatus, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Arbeidsstatus) %>%
-#   mutate(Variabel = c("Arbeidsstatus", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Arbeidsstatus")
-#
-#
-# hovedinntekt <- rapportdata_barn %>%
-#   filter(!is.na(regtid)) %>%
-#   summarise(n = n(),
-#             .by = c(Hovedinntekt, regtid)) %>%
-#   pivot_wider(names_from = regtid, values_from = n, values_fill = 0) %>%
-#   mutate(andel1 = .[,2]/sum(.[,2])*100,
-#          andel2 = .[,3]/sum(.[,3])*100) %>%
-#   arrange(Hovedinntekt) %>%
-#   mutate(Variabel = c("Hovedinntekt", rep('', dim(.)[1]-1))) %>%
-#   select(6,1,2,4,3,5) %>%
-#   rename("Alternativer" = "Hovedinntekt")
-
-
 sosio_barn <- dplyr::bind_rows(kjonn,alder,sivilstatus,bostatus, egnebarn,
                                utdanning,arbeidsstatus, hovedinntekt)
 
-names(sosio_barn) <- c("", "", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+# names(sosio_barn) <- c("", "", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+names(sosio_barn)[1:2] <- c("", "")
 
 write.csv2(sosio_barn, paste0(tabfolder, "sosio_barn.csv"), row.names = F, fileEncoding = "Latin1")
 
@@ -690,20 +596,30 @@ write.csv2(Tabell_plaging_voksen, paste0(tabfolder, "negative_hendelser_voksen.c
 write.csv2(Tabell_plaging_barn, paste0(tabfolder, "negative_hendelser_barn.csv"),
            row.names = F, fileEncoding = "Latin1")
 
+names(Tabell_plaging_voksen) <- c("", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
+                                  paste0("N ", rap_aar-2, "-", rap_aar-1),
+                                  paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                                  paste0("Antall ", rap_aar),
+                                  paste0("N ", rap_aar),
+                                  paste0("Andel ", rap_aar))
 
-names(Tabell_plaging_voksen) <- c("", "Antall 2021-2022", "N 2021-2022", "Andel 2021-2022",
-                                  "Antall 2023", "N 2023", "Andel 2023")
 
 print(xtable::xtable(Tabell_plaging_voksen, digits=c(0,0,0,0,1,0,0,1),
-                     align = c('l', 'L{1.0in}', 'R{0.7in}', 'R{0.6in}', 'R{0.7in}', 'R{0.7in}','R{0.6in}','R{0.7in}'),
+                     align = c('l', 'L{1.0in}', 'R{0.7in}', 'R{0.6in}',
+                               'R{0.7in}', 'R{0.7in}','R{0.6in}','R{0.7in}'),
                      caption='Negative hendelser mm. voksen'),
       include.rownames=FALSE)
 
-names(Tabell_plaging_barn) <- c("", "Antall 2021-2022", "N 2021-2022", "Andel 2021-2022",
-                                "Antall 2023", "N 2023", "Andel 2023")
+names(Tabell_plaging_barn) <- c("", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
+                                paste0("N ", rap_aar-2, "-", rap_aar-1),
+                                paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                                paste0("Antall ", rap_aar),
+                                paste0("N ", rap_aar),
+                                paste0("Andel ", rap_aar))
 
 print(xtable::xtable(Tabell_plaging_barn, digits=c(0,0,0,0,1,0,0,1),
-                     align = c('l', 'L{1.0in}', 'R{0.7in}', 'R{0.6in}', 'R{0.7in}', 'R{0.7in}','R{0.6in}','R{0.7in}'),
+                     align = c('l', 'L{1.0in}', 'R{0.7in}', 'R{0.6in}', 'R{0.7in}',
+                               'R{0.7in}','R{0.6in}','R{0.7in}'),
                      caption='Negative hendelser mm. barn'),
       include.rownames=FALSE)
 
@@ -747,7 +663,7 @@ diagnoser_barn <- rapportdata_barn %>%
     .by = c(regtid_slutt)
   ) %>%
   tr_summarize_output(kolnavn1 = "Diagnoser (ICD-10)") %>%
-  filter(`2021-2022` != 0 | `2023` !=0)
+  filter(`2022-2023` != 0 | `2024` !=0)
 
 
 diagnoser_voksne <- rapportdata_voksen %>%
@@ -814,8 +730,8 @@ bmi_start_barn <- dplyr::full_join(
 
 tmp <- rapportdata_barn %>%
   mutate(bmi_slutt_kat = factor(bmi_slutt_kat,
-                          levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
-                                     "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
+                                levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
+                                           "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
   filter(!is.na(bmi_slutt_kat),
          !is.na(regtid_slutt)) %>%
   count(bmi_slutt_kat, regtid_slutt, .drop = FALSE) %>%
@@ -851,8 +767,8 @@ bmi_start_voksen <- dplyr::full_join(
 
 tmp <- rapportdata_voksen %>%
   mutate(bmi_slutt_kat = factor(bmi_slutt_kat,
-                          levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
-                                     "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
+                                levels = c("<10", "(10,12.5]", "(12.5,15]", "(15,17.5]",
+                                           "(17.5,20]", "(20,25]", "(25,30]", ">30"))) %>%
   filter(!is.na(bmi_slutt_kat),
          !is.na(regtid_slutt)) %>%
   count(bmi_slutt_kat, regtid_slutt, .drop = FALSE) %>%
@@ -879,10 +795,22 @@ write.csv2(bmi_start_voksen, paste0(tabfolder, "bmi_start_voksen.csv"),
 write.csv2(bmi_slutt_voksen, paste0(tabfolder, "bmi_slutt_voksen.csv"),
            row.names = F, fileEncoding = "Latin1")
 
-names(bmi_start_barn) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
-names(bmi_slutt_barn) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
-names(bmi_start_voksen) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
-names(bmi_slutt_voksen) <- c("BMI", "Antall 2021-2022", "Andel 2021-2022", "Antall 2023", "Andel 2023")
+names(bmi_start_barn) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Antall ", rap_aar),
+                           paste0("Andel ", rap_aar))
+names(bmi_slutt_barn) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Antall ", rap_aar),
+                           paste0("Andel ", rap_aar))
+names(bmi_start_voksen) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Antall ", rap_aar),
+                           paste0("Andel ", rap_aar))
+names(bmi_slutt_voksen) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                           paste0("Antall ", rap_aar),
+                           paste0("Andel ", rap_aar))
 
 print(xtable::xtable(bmi_start_barn, digits=c(0,0,0,1,0,1),
                      align = c('l', 'l', 'r', 'r', 'r', 'r'),
