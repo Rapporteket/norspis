@@ -1,6 +1,6 @@
 Package: norspis
 Title: NorSpis at Rapporteket
-Version: 0.1.0
+Version: 1.0.1
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
@@ -26,11 +26,13 @@ Imports:
     magrittr,
     shiny,
     rapbase,
+    rapFigurer,
     rlang,
     janitor,
     shinyjs
 Remotes:
-    Rapporteket/rapbase@*release,
+    Rapporteket/rapbase@main,
+    Rapporteket/rapFigurer
 Suggests: 
     covr,
     lintr,

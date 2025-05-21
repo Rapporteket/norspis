@@ -482,22 +482,30 @@ avhengighet <- rapportdata_voksen %>%
             .by = c(regtid))
 
 
-Tabell_plaging_voksen <- bind_rows(
-  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4])),
-  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4]))) %>%
+Tabell_plaging_voksen <-
+  data.frame(Variabelnavn = "Fysisk mishandling",
+             cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4])) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Psykisk mishandling", cbind(psykiskmisshandling[1,2:4], psykiskmisshandling[2,2:4]))) %>%
-  bind_rows(data.frame(Variabelnavn = "Misbruk/overgrep", cbind(overgrep[1,2:4], overgrep[2,2:4]))) %>%
-  bind_rows(data.frame(Variabelnavn = "Mobbing", cbind(mobbing[1,2:4], mobbing[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Psykisk mishandling",
+               cbind(psykiskmisshandling[1,2:4], psykiskmisshandling[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Misbruk/overgrep",
+                       cbind(overgrep[1,2:4], overgrep[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Mobbing",
+                       cbind(mobbing[1,2:4], mobbing[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Selvskading (>1 år siden)", cbind(selvskading_tidl[1,2:4], selvskading_tidl[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Selvskading (>1 år siden)",
+               cbind(selvskading_tidl[1,2:4], selvskading_tidl[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Selvskading siste år", cbind(selvskading_sisteaar[1,2:4], selvskading_sisteaar[2,2:4]))) %>%
-  bind_rows(data.frame(Variabelnavn = "Selvmordsforsøk (>1 år)", cbind(selvmordforsok_tidl[1,2:4], selvmordforsok_tidl[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Selvskading siste år",
+               cbind(selvskading_sisteaar[1,2:4], selvskading_sisteaar[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Selvmordsforsøk (>1 år)",
+                       cbind(selvmordforsok_tidl[1,2:4], selvmordforsok_tidl[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Selvmordsforsøk siste år", cbind(selvmordforsok_sisteaar[1,2:4], selvmordforsok_sisteaar[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Selvmordsforsøk siste år",
+               cbind(selvmordforsok_sisteaar[1,2:4], selvmordforsok_sisteaar[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Misbruk/avhengighet rusmidler/medikamenter", cbind(avhengighet[1,2:4], avhengighet[2,2:4])))
+    data.frame(Variabelnavn = "Misbruk/avhengighet rusmidler/medikamenter",
+               cbind(avhengighet[1,2:4], avhengighet[2,2:4])))
 
 
 
@@ -574,22 +582,31 @@ avhengighet <- rapportdata_barn %>%
             .by = c(regtid))
 
 
-Tabell_plaging_barn <- bind_rows(
-  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4])),
-  data.frame(Variabelnavn = "Fysisk mishandling", cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4]))) %>%
+Tabell_plaging_barn <-
+  data.frame(Variabelnavn = "Fysisk mishandling",
+             cbind(fysiskmisshandling[1,2:4], fysiskmisshandling[2,2:4])) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Psykisk mishandling", cbind(psykiskmisshandling[1,2:4], psykiskmisshandling[2,2:4]))) %>%
-  bind_rows(data.frame(Variabelnavn = "Misbruk/overgrep", cbind(overgrep[1,2:4], overgrep[2,2:4]))) %>%
-  bind_rows(data.frame(Variabelnavn = "Mobbing", cbind(mobbing[1,2:4], mobbing[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Psykisk mishandling",
+               cbind(psykiskmisshandling[1,2:4], psykiskmisshandling[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Misbruk/overgrep",
+                       cbind(overgrep[1,2:4], overgrep[2,2:4]))) %>%
+  bind_rows(data.frame(Variabelnavn = "Mobbing",
+                       cbind(mobbing[1,2:4], mobbing[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Selvskading (>1 år siden)", cbind(selvskading_tidl[1,2:4], selvskading_tidl[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Selvskading (>1 år siden)",
+               cbind(selvskading_tidl[1,2:4], selvskading_tidl[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Selvskading siste år", cbind(selvskading_sisteaar[1,2:4], selvskading_sisteaar[2,2:4]))) %>%
-  bind_rows(data.frame(Variabelnavn = "Selvmordsforsøk (>1 år)", cbind(selvmordforsok_tidl[1,2:4], selvmordforsok_tidl[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Selvskading siste år",
+               cbind(selvskading_sisteaar[1,2:4], selvskading_sisteaar[2,2:4]))) %>%
+  bind_rows(data.frame(
+    Variabelnavn = "Selvmordsforsøk (>1 år)",
+    cbind(selvmordforsok_tidl[1,2:4], selvmordforsok_tidl[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Selvmordsforsøk siste år", cbind(selvmordforsok_sisteaar[1,2:4], selvmordforsok_sisteaar[2,2:4]))) %>%
+    data.frame(Variabelnavn = "Selvmordsforsøk siste år",
+               cbind(selvmordforsok_sisteaar[1,2:4], selvmordforsok_sisteaar[2,2:4]))) %>%
   bind_rows(
-    data.frame(Variabelnavn = "Misbruk/avhengighet rusmidler/medikamenter", cbind(avhengighet[1,2:4], avhengighet[2,2:4])))
+    data.frame(Variabelnavn = "Misbruk/avhengighet rusmidler/medikamenter",
+               cbind(avhengighet[1,2:4], avhengighet[2,2:4])))
 
 write.csv2(Tabell_plaging_voksen, paste0(tabfolder, "negative_hendelser_voksen.csv"),
            row.names = F, fileEncoding = "Latin1")
@@ -804,13 +821,13 @@ names(bmi_slutt_barn) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
                            paste0("Antall ", rap_aar),
                            paste0("Andel ", rap_aar))
 names(bmi_start_voksen) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
-                           paste0("Andel ", rap_aar-2, "-", rap_aar-1),
-                           paste0("Antall ", rap_aar),
-                           paste0("Andel ", rap_aar))
+                             paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                             paste0("Antall ", rap_aar),
+                             paste0("Andel ", rap_aar))
 names(bmi_slutt_voksen) <- c("BMI", paste0("Antall ", rap_aar-2, "-", rap_aar-1),
-                           paste0("Andel ", rap_aar-2, "-", rap_aar-1),
-                           paste0("Antall ", rap_aar),
-                           paste0("Andel ", rap_aar))
+                             paste0("Andel ", rap_aar-2, "-", rap_aar-1),
+                             paste0("Antall ", rap_aar),
+                             paste0("Andel ", rap_aar))
 
 print(xtable::xtable(bmi_start_barn, digits=c(0,0,0,1,0,1),
                      align = c('l', 'l', 'r', 'r', 'r', 'r'),
