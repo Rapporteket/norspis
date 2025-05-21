@@ -52,6 +52,7 @@ norspisLesOgProsesser <- function() {
                   Kortnavn = ifelse(AvdRESH == 109979 &
                                       ForlopsType1Num %in% c(1,3,5,7,98),
                                     "OUS: Reg. V", Kortnavn),
+                  Kortnavn = ifelse(is.na(Kortnavn), SykehusNavn, Kortnavn),
                   Over18 = ifelse(PasientAlder >= 18, TRUE, FALSE))
 
   RegData_start <- RegData[RegData$ForlopsType1Num %in% 3:4, ]
