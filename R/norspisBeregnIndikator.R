@@ -307,7 +307,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(BeintetthMaling = ifelse(is.na(BeintetthMaling), 0, BeintetthMaling)) %>%
       dplyr::mutate(var = BeintetthMaling,
                     denominator = 1,
-                    year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
+                    year = SluttAar) %>%
       dplyr::select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
       dplyr::rename(SykehusNavn = Kortnavn) %>%
       dplyr::mutate(ind_id = ind_id,
@@ -332,7 +332,7 @@ norspisBeregnIndikator <- function(RegData, ind_id = "norspis_KI1_symptomreduksj
       dplyr::mutate(BeintetthMaling = ifelse(is.na(BeintetthMaling), 0, BeintetthMaling)) %>%
       dplyr::mutate(var = BeintetthMaling,
                     denominator = 1,
-                    year = format(RegHendelsesdato_start, "%Y") %>% as.numeric()) %>%
+                    year = SluttAar) %>%
       dplyr::select(AvdRESH, year, var, denominator, Kortnavn, AvdBUV_start) %>%
       dplyr::rename(SykehusNavn = Kortnavn) %>%
       dplyr::mutate(ind_id = ind_id,

@@ -33,7 +33,7 @@ options(dplyr.summarise.inform = FALSE)
 
 rap_aar <- 2024
 
-norspisdata <- norspisLesOgProsesser()
+norspisdata <- norspis::norspisLesOgProsesser()
 RegData <- norspisdata$RegData
 ForlopsOversikt <- norspisdata$ForlopsOversikt
 SkjemaOversikt <- norspisdata$SkjemaOversikt
