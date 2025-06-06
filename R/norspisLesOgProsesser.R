@@ -10,16 +10,17 @@ norspisLesOgProsesser <- function() {
 
   AlleScorer <- norspis::queryAlleScorer("data")
   EnkeltLeddNum <- norspis::queryEnkeltLeddNum("data")
-  ForlopsOversikt <- norspis::queryForlopsOversikt("data") %>%
+  ForlopsOversikt <- norspis::queryForlopsOversikt("data")  |>
     merge(norspis::resh_voksen_barn[, c("AvdRESH", "AvdBUV",
                                         "Kortnavn", "orgnr")],
-          by = "AvdRESH", all.x = TRUE) %>%
+          by = "AvdRESH", all.x = TRUE) |>
     dplyr::mutate(AvdBUV = ifelse(AvdRESH == 109979 &
                                     ForlopsType1Num %in% c(1,3,5,7,98),
                                   "V", AvdBUV),
                   Kortnavn = ifelse(AvdRESH == 109979 &
                                       ForlopsType1Num %in% c(1,3,5,7,98),
                                     "OUS: Reg. V", Kortnavn),
+                  Kortnavn = ifelse(is.na(Kortnavn), SykehusNavn, Kortnavn), # Hvis kortnavn mangler
                   Over18 = ifelse(PasientAlder >= 18, TRUE, FALSE))
 
 
@@ -40,12 +41,12 @@ norspisLesOgProsesser <- function() {
                    ForlopsOversikt[, c("ForlopsID", "ForlopsType1Num",
                                        "ForlopsType1", "BasisRegStatus",
                                        "PasientAlder", "Fodselsdato")],
-                   by = "ForlopsID") %>%
-    dplyr::filter(BasisRegStatus == 1) %>%
-    merge(AlleScorer, by = "ForlopsID") %>%
+                   by = "ForlopsID") |>
+    dplyr::filter(BasisRegStatus == 1) |>
+    merge(AlleScorer, by = "ForlopsID") |>
     merge(norspis::resh_voksen_barn[, c("AvdRESH", "AvdBUV",
                                         "Kortnavn", "orgnr")],
-          by = "AvdRESH", all.x = TRUE) %>%
+          by = "AvdRESH", all.x = TRUE) |>
     dplyr::mutate(AvdBUV = ifelse(AvdRESH == 109979 &
                                     ForlopsType1Num %in% c(1,3,5,7,98),
                                   "V", AvdBUV),
@@ -75,10 +76,10 @@ norspisLesOgProsesser <- function() {
   RegData <- merge(RegData_start, RegData_slutt,
                    by.x = "ForlopsID", by.y = "RegTilhorendeStartReg",
                    suffixes = c("_start", "_slutt"),
-                   all.x = TRUE) %>%
+                   all.x = TRUE) |>
     dplyr::mutate(
-      StartAar = format(RegHendelsesdato_start, "%Y") %>% as.numeric(),
-      SluttAar = format(RegHendelsesdato_slutt, "%Y") %>% as.numeric())
+      StartAar = format(RegHendelsesdato_start, "%Y") |> as.numeric(),
+      SluttAar = format(RegHendelsesdato_slutt, "%Y") |> as.numeric())
 
   ## Foreløpig, velg én sluttregistrering der det finnes flere
   RegData <- RegData[match(unique(RegData$ForlopsID), RegData$ForlopsID), ]
@@ -88,13 +89,13 @@ norspisLesOgProsesser <- function() {
                                        "Sivilstatus", "UtdanningSSB")])
 
 
-  SkjemaOversikt <- norspis::querySkjemaOversikt("data") %>%
+  SkjemaOversikt <- norspis::querySkjemaOversikt("data") |>
     merge(ForlopsOversikt[, c("ForlopsID", "ForlopsType1",
                               "PasientAlder", "ForlopsType1Num")],
-          by = "ForlopsID", all.x = T) %>%
+          by = "ForlopsID", all.x = T) |>
     merge(norspis::resh_voksen_barn[, c("AvdRESH", "AvdBUV",
                                         "Kortnavn")],
-          by = "AvdRESH", all.x = TRUE) %>%
+          by = "AvdRESH", all.x = TRUE) |>
     dplyr::mutate(
       AvdBUV = ifelse(AvdRESH == 109979 &
                         ForlopsType1Num %in% c(1,3,5,7,98),
@@ -102,6 +103,7 @@ norspisLesOgProsesser <- function() {
       Kortnavn = ifelse(AvdRESH == 109979 &
                           ForlopsType1Num %in% c(1,3,5,7,98),
                         "OUS: Reg. V", Kortnavn),
+      Kortnavn = ifelse(is.na(Kortnavn), SykehusNavn, Kortnavn), # Hvis kortnavn mangler
       Over18 = ifelse(PasientAlder >= 18, TRUE, FALSE),
       SkjemaRekkeflg = ifelse(SkjemaRekkeflg==9, "5", SkjemaRekkeflg),
       Skjemanavn = factor(
