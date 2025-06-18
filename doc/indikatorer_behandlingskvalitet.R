@@ -61,8 +61,12 @@ for (i in 2:length(ind_id)) {
   Indikator <- dplyr::bind_rows(Indikator, TabellData[which(TabellData$year <= rap_aar), ])
 }
 
-Indikator <- merge(Indikator, norspis::resh_voksen_barn[, c("AvdRESH", "orgnr")], by = "AvdRESH") %>%
+map_resh_orgnr <- read.csv2("~/regdata/norspis/map_resh_orgnr2025.csv")
+Indikator <- merge(Indikator, map_resh_orgnr[, c("UnitId", "orgnr")],
+                   by.x = "AvdRESH", by.y = "UnitId") %>%
   dplyr::select(orgnr, year, var, denominator, ind_id, context)
+# Indikator <- merge(Indikator, norspis::resh_voksen_barn[, c("AvdRESH", "orgnr")], by = "AvdRESH") %>%
+#   dplyr::select(orgnr, year, var, denominator, ind_id, context)
 
 
 # DG2023 <- readxl::read_xls("~/mydata/norspis/NORSPIS - DG til sykehusveiviseren 2023.xls",
@@ -83,8 +87,10 @@ Indikator <- merge(Indikator, norspis::resh_voksen_barn[, c("AvdRESH", "orgnr")]
 #
 # write.csv2(DG, "~/mydata/norspis/norspis_dg2023.csv", row.names = F)
 #
-#
-# Indikator <- dplyr::bind_rows(Indikator, DG2023)
+DG2024 <- read.csv2(paste0(tabfolder, "data_shusviser2024.csv")) |>
+  dplyr::filter(ind_id == "norspis_dg")
+
+Indikator <- dplyr::bind_rows(Indikator, DG2024)
 
 write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
            row.names = F)
