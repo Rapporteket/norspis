@@ -133,7 +133,7 @@ appServer <- function(input, output, session) {
 #   )
 
   # use stats
-  rapbase::statsServer("norspisStats", registryName = registryName)
+  rapbase::statsServer("norspisStats", registryName = registryName, app_id = Sys.getenv("FALK_APP_ID"))
 
   # export
   rapbase::exportGuideServer("norspisExport", registryName)
