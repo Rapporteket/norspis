@@ -22,13 +22,10 @@ datadump_UI <- function(id){
                      separator = " til "),
       selectInput(inputId = ns("dumptype"),
                   label = "Velg type datadump",
-                  choices = c("AlleScorer",
-                              "Behandling",
-                              "BehandlingNum",
-                              "EnkeltLedd",
-                              "EnkeltLeddNum",
-                              "ForlopsOversikt",
-                              "SkjemaOversikt",
+                  choices = c("allescorer",
+                              "enkeltleddnum",
+                              "forlopsoversikt",
+                              "skjemaoversikt",
                               "Norspisdata_utflatet")),
       tags$hr(),
       downloadButton(ns("lastNed_dump"), "Last ned datadump")
@@ -40,13 +37,10 @@ datadump_UI <- function(id){
          Lokale brukere vil bare kunne laste ned data for egen avdeling.'),
       br(),
       h4(tags$b(tags$u('Forklaring til de ulike datadump-typene:'))),
-      h4(tags$b('AlleScorer: '), 'forklaring fra register'),
-      h4(tags$b('Behandling: '), 'forklaring fra register'),
-      h4(tags$b('BehandlingNum: '), 'forklaring fra register'),
-      h4(tags$b('EnkeltLedd: '), 'forklaring fra register'),
-      h4(tags$b('EnkeltLeddNum: '), 'forklaring fra register'),
-      h4(tags$b('ForlopsOversikt: '), 'forklaring fra register'),
-      h4(tags$b('SkjemaOversikt: '), 'En oversikt med informasjon om status på
+      h4(tags$b('allescorer: '), 'forklaring fra register'),
+      h4(tags$b('enkeltleddnum: '), 'forklaring fra register'),
+      h4(tags$b('forlopsoversikt: '), 'forklaring fra register'),
+      h4(tags$b('skjemaoversikt: '), 'En oversikt med informasjon om status på
          alle påbegynte og avsluttede skjema.'),
       h4(tags$b('Norspisdata_utflatet: '), 'inneholder alle kliniske variabler
       i registeret og benytter tallkodene til kategoriske variabler.
