@@ -36,9 +36,11 @@ appServer <- function(input, output, session) {
   shiny::observeEvent(user$role(), {
     if (user$role() != 'SC') {
       shiny::hideTab("tabs", target = "Verkt\u00f8y")
+      shiny::hideTab("tabs", target = "Datadump")
     }
     if (user$role() == 'SC') {
       shiny::showTab("tabs", target = "Verkt\u00f8y")
+      shiny::showTab("tabs", target = "Datadump")
     }
   })
 
