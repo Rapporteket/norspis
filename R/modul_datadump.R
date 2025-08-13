@@ -37,11 +37,21 @@ datadump_UI <- function(id){
          Lokale brukere vil bare kunne laste ned data for egen avdeling.'),
       br(),
       h4(tags$b(tags$u('Forklaring til de ulike datadump-typene:'))),
-      h4(tags$b('allescorer: '), 'forklaring fra register'),
-      h4(tags$b('enkeltleddnum: '), 'forklaring fra register'),
-      h4(tags$b('forlopsoversikt: '), 'forklaring fra register'),
-      h4(tags$b('skjemaoversikt: '), 'En oversikt med informasjon om status på
-         alle påbegynte og avsluttede skjema.'),
+      h4(tags$b('allescorer: '), 'Inneholder globalskårer og delskårer for alle
+         standard kartleggingsskjema i registeret, for eksempel EDE-Q 6.0,
+         CIA 3.0, SDQ og KIDSCREEN. '),
+      h4(tags$b('enkeltleddnum: '), 'Inneholder variablene fra følgende skjema:
+         Bakgrunnsopplysninger, Medisinske opplysninger, Pasienttilfredshet,
+         Pasienterfaringer i spesialisthelsetjenesten, Registreringstype,
+         diagnoseskjemaene, Behandling og EDE-Q 6.0 (utvalgte enkeltspørsmål). '),
+      h4(tags$b('forlopsoversikt: '), 'Inneholder utvalgte sentrale variabler
+         fra pasientforløpet, blant annet hvilken behandlingsenhet som har
+         behandlet pasienten, pasient-ID og forløps-ID, forløpstype,
+         registreringsdato (Hoveddato) og BasisRegStatus, som viser om
+         registreringen er opprettet, i kladd eller ferdigstilt. Delvis overlapp
+         med EnkeltLeddNum.'),
+      h4(tags$b('skjemaoversikt: '), 'Viser registreringsstatus (opprettet, i
+         kladd eller ferdigstilt) for alle skjema i alle forløp. '),
       h4(tags$b('Norspisdata_utflatet: '), 'inneholder alle kliniske variabler
       i registeret og benytter tallkodene til kategoriske variabler.
          At tabellen er utflatet innebærer at sluttregistrering er koblet til
