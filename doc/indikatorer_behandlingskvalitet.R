@@ -9,7 +9,7 @@ RegData <- norspisdata$RegData
 ForlopsOversikt <- norspisdata$ForlopsOversikt
 SkjemaOversikt <- norspisdata$SkjemaOversikt
 
-tabfolder <- "C:/Users/kth200/OneDrive - Helse Nord RHF/Dokumenter/regdata/norspis/indikator_behkvalitet/"
+tabfolder <- "C:/regdata/norspis/indikator_behkvalitet/"
 if (!dir.exists(tabfolder)) {
   dir.create(tabfolder)
 }
@@ -61,10 +61,28 @@ for (i in 2:length(ind_id)) {
   Indikator <- dplyr::bind_rows(Indikator, TabellData[which(TabellData$year <= rap_aar), ])
 }
 
-map_resh_orgnr <- read.csv2("~/regdata/norspis/map_resh_orgnr2025.csv")
+map_resh_orgnr <- read.csv2("C:/regdata/norspis/map_resh_orgnr2025.csv")
 Indikator <- merge(Indikator, map_resh_orgnr[, c("UnitId", "orgnr")],
                    by.x = "AvdRESH", by.y = "UnitId") %>%
   dplyr::select(orgnr, year, var, denominator, ind_id, context)
+
+DG_ny2025 <- readxl::read_xls(
+  "C:/regdata/norspis/indikator_behkvalitet/NORSPIS - DG til sykehusveiviseren 2023 og 2024.xls",
+  sheet = 1) |>
+  dplyr::rename(orgnr_reg = orgnr) |>
+  merge(map_resh_orgnr[, c("UnitId", "orgnr")],
+        by.x = "ReshID", by.y = "UnitId") |>
+  dplyr::mutate(context = "caregiver",
+                ind_id = "norspis_dg") |>
+  dplyr::rename(var = Teller,
+                denominator = Nevner) |>
+  dplyr::select(orgnr, year, var, denominator, ind_id, context)
+
+write.csv2(
+  DG_ny2025,
+  "C:/regdata/norspis/indikator_behkvalitet/norspis_dg2023_2024.csv",
+  row.names = F)
+
 # Indikator <- merge(Indikator, norspis::resh_voksen_barn[, c("AvdRESH", "orgnr")], by = "AvdRESH") %>%
 #   dplyr::select(orgnr, year, var, denominator, ind_id, context)
 
@@ -87,11 +105,13 @@ Indikator <- merge(Indikator, map_resh_orgnr[, c("UnitId", "orgnr")],
 #
 # write.csv2(DG, "~/mydata/norspis/norspis_dg2023.csv", row.names = F)
 #
-DG2024 <- read.csv2(paste0(tabfolder, "data_shusviser2024.csv")) |>
-  dplyr::filter(ind_id == "norspis_dg")
+# DG2024 <- read.csv2(paste0(tabfolder, "data_shusviser2024.csv")) |>
+#   dplyr::filter(ind_id == "norspis_dg")
+#
+# Indikator <- dplyr::bind_rows(Indikator, DG2024)
+#
+# write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
+#            row.names = F)
 
-Indikator <- dplyr::bind_rows(Indikator, DG2024)
 
-write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
-           row.names = F)
 
