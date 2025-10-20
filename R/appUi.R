@@ -5,22 +5,13 @@
 
 appUi <- function() {
 
-  shiny::addResourcePath("rap", system.file("www", package = "rapbase"))
-  appTitle <- "NorSpis"
+  regTitle <- "NorSpis"
 
   shiny::tagList(
-
     shiny::navbarPage(
-      title = shiny::div(
-        shiny::a(
-          shiny::includeHTML(
-            system.file("www/logo.svg", package = "rapbase")
-          )
-        ),
-        appTitle
-      ),
-      windowTitle = appTitle,
-      theme = "rap/bootstrap.css",
+      title = rapbase::title(regTitle),
+      windowTitle = regTitle,
+      theme = rapbase::theme(),
       id = "tabs",
 
       shiny::tabPanel(
