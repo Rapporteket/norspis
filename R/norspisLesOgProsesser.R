@@ -11,9 +11,10 @@ norspisLesOgProsesser <- function() {
   AlleScorer <- norspis::queryAlleScorer("data")
   EnkeltLeddNum <- norspis::queryEnkeltLeddNum("data")
   ForlopsOversikt <- norspis::queryForlopsOversikt("data")  |>
+    dplyr::mutate(AvdRESH = as.numeric(AvdRESH)) |>
     merge(norspis::resh_voksen_barn[, c("AvdRESH", "AvdBUV",
                                         "Kortnavn", "orgnr")],
-          by = "AvdRESH", all.x = TRUE) |>
+          by = "AvdRESH", suffixes = c(".x", ""), all.x = TRUE) |>
     dplyr::mutate(AvdBUV = ifelse(AvdRESH == 109979 &
                                     ForlopsType1Num %in% c(1,3,5,7,98),
                                   "V", AvdBUV),
@@ -74,7 +75,7 @@ norspisLesOgProsesser <- function() {
                                               "orgnr"))]
 
   RegData <- merge(RegData_start, RegData_slutt,
-                   by.x = "ForlopsID", by.y = "RegTilhorendeStartReg",
+                   by.x = "ForlopsID", by.y = "RegTilhorendeReg",
                    suffixes = c("_start", "_slutt"),
                    all.x = TRUE) |>
     dplyr::mutate(
