@@ -79,13 +79,15 @@ norspisLesOgProsesser <- function() {
   ##########################################################################
   RegData <- merge(RegData,
                    ForlopsOversikt[, c("ForlopsID", "erMann", "Norsktalende",
-                                       "Sivilstatus", "UtdanningSSB")])
+                                       "Sivilstatus", "UtdanningSSB", "DognPol")])
 
 
   SkjemaOversikt <- norspis::querySkjemaOversikt("data") |>
     merge(ForlopsOversikt[, c("ForlopsID", "ForlopsType1",
                               "PasientAlder", "ForlopsType1Num",
-                              "AvdRESH", "AvdBUV", "Kortnavn")],
+                              "AvdRESH", "AvdBUV", "Kortnavn",
+                              "DognPol"
+                              )],
           by = "ForlopsID", all.x = T) |>
     dplyr::mutate(
       Over18 = ifelse(PasientAlder >= 18, TRUE, FALSE),

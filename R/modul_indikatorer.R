@@ -78,7 +78,9 @@ indikatorfigServer <- function(id, RegData, userRole, hvd_session){
       tabellReager <- reactive({
         indikatordata <- norspis::norspisBeregnIndikator(RegData = RegData,
                                                          ind_id = input$valgtVar)
-        TabellData <- indikatordata$indikator
+        TabellData <- indikatordata$indikator |>
+          dplyr::filter(year <= as.numeric(req(input$tilAar)),
+                        )
         TabellData <- TabellData[which(TabellData$year <= as.numeric(req(input$tilAar))), ]
         indikatordata$indikator <- TabellData
         indikatordata
