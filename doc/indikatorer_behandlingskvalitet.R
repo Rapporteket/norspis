@@ -2,7 +2,7 @@ library(norspis)
 library(dplyr)
 rm(list = ls())
 
-rap_aar <- 2024
+rap_aar <- 2025
 
 norspisdata <- norspisLesOgProsesser()
 RegData <- norspisdata$RegData
@@ -67,7 +67,7 @@ Indikator <- merge(Indikator, map_resh_orgnr[, c("UnitId", "orgnr")],
   dplyr::select(orgnr, year, var, denominator, ind_id, context)
 
 DG_ny2025 <- readxl::read_xls(
-  "C:/regdata/norspis/indikator_behkvalitet/NORSPIS - DG til sykehusveiviseren 2023 og 2024.xls",
+  "C:/regdata/norspis/indikator_behkvalitet/NORSPIS - DG til sykehusveiviseren 2023 og 2024 v2.xls",
   sheet = 1) |>
   dplyr::rename(orgnr_reg = orgnr) |>
   merge(map_resh_orgnr[, c("UnitId", "orgnr")],
@@ -76,7 +76,12 @@ DG_ny2025 <- readxl::read_xls(
                 ind_id = "norspis_dg") |>
   dplyr::rename(var = Teller,
                 denominator = Nevner) |>
-  dplyr::select(orgnr, year, var, denominator, ind_id, context)
+  dplyr::select(orgnr, year, var, denominator, ind_id, context) |>
+  dplyr::bind_rows(
+    data.frame(orgnr = c(1,1), year = c(2023, 2024), var = c(0, 0),
+               denominator = c(3092-785, 2778-794),
+               ind_id = c("norspis_dg", "norspis_dg"), context = "caregiver")
+  )
 
 write.csv2(
   DG_ny2025,
@@ -110,8 +115,8 @@ write.csv2(
 #
 # Indikator <- dplyr::bind_rows(Indikator, DG2024)
 #
-# write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
-#            row.names = F)
+write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
+           row.names = F)
 
 
 
