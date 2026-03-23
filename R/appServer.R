@@ -33,14 +33,51 @@ appServer <- function(input, output, session) {
   hospitalName <- shiny::reactive(
     ForlopsOversikt$Kortnavn[match(shiny::req(user$org), ForlopsOversikt$AvdRESH)])
 
-  shiny::observeEvent(user$role(), {
-    if (user$role() != 'SC') {
-      shiny::hideTab("tabs", target = "Verkt\u00f8y")
-      shiny::hideTab("tabs", target = "Datadump")
-    }
+  output$dataDumpUI <- shiny::renderUI({
+    shiny::req(user$role())
     if (user$role() == 'SC') {
-      shiny::showTab("tabs", target = "Verkt\u00f8y")
-      shiny::showTab("tabs", target = "Datadump")
+      shiny::tabPanel(
+        title = "Datadump",
+        value = "datadump",
+        norspis::datadump_UI(id = "datadump_id")
+      )
+    } else {
+      NULL
+    }
+  })
+
+  output$verktoyNavMenu <- shiny::renderUI({
+    shiny::req(user$role())
+    if (user$role() == 'SC') {
+      shiny::navbarMenu(
+        "Verkt\u00f8y",
+        shiny::tabPanel(
+          "Bruksstatistikk",
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              rapbase::statsInput("norspisStats"),
+              rapbase::statsGuideUI("norspisStats")
+            ),
+            shiny::mainPanel(
+              rapbase::statsUI("norspisStats")
+            )
+          )
+        ),
+
+        shiny::tabPanel(
+          "Eksport",
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              rapbase::exportUCInput("norspisExport")
+            ),
+            shiny::mainPanel(
+              rapbase::exportGuideUI("norspisExport")
+            )
+          )
+        )
+      )
+    } else {
+      NULL
     }
   })
 
