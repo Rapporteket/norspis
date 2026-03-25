@@ -50,9 +50,9 @@ appServer <- function(input, output, session) {
   shiny::observeEvent(user$role(), {
     if (user$role() == "SC") {
       if (!tool_tabs_added()) {
-        shiny::insertTab(
+        shiny::appendTab(
           inputId = "tabs",
-          target = "Verktøy",
+          manuName = "Verktøy",
           tab = shiny::tabPanel(
             "Bruksstatistikk",
             shiny::sidebarLayout(
@@ -64,8 +64,7 @@ appServer <- function(input, output, session) {
                 rapbase::statsUI("norspisStats")
               )
             )
-          ),
-          position = "after"
+          )
         )
         shiny::insertTab(
           inputId = "tabs",
