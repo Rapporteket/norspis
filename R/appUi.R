@@ -66,7 +66,7 @@ appUi <- function() {
         "Administrative tabeller",
         norspis::admtab_ui("admtabell")
       ),
-      shiny::uiOutput("verktoyNavMenu")
+      shiny::navbarMenu("Verktøy")
     )
   )
 }
