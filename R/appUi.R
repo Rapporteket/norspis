@@ -60,13 +60,10 @@ appUi <- function() {
         value = "indikatorer",
         norspis::indikatorfig_UI(id = "indikatorfig_id")
       ),
-      shiny::uiOutput("dataDumpUI"),
-
       shiny::tabPanel(
         "Administrative tabeller",
         norspis::admtab_ui("admtabell")
-      ),
-      shiny::navbarMenu("Verktøy")
+      )
     )
   )
 }
