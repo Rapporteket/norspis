@@ -57,59 +57,12 @@ appUi <- function() {
 
       shiny::tabPanel(
         "Indikatorer",
+        value = "indikatorer",
         norspis::indikatorfig_UI(id = "indikatorfig_id")
       ),
-
-      shiny::tabPanel("Datadump",
-                      norspis::datadump_UI(id = "datadump_id")
-      ),
-
       shiny::tabPanel(
         "Administrative tabeller",
         norspis::admtab_ui("admtabell")
-      ),
-
-      shiny::navbarMenu(
-        "Verkt\u00f8y",
-
-        # shiny::tabPanel(
-        #   "Utsending",
-        #   shiny::sidebarLayout(
-        #     shiny::sidebarPanel(
-        #       rapbase::autoReportFormatInput("norspisDispatchFormat"),
-        #       rapbase::autoReportOrgInput("norspisDispatchOrg"),
-        #       rapbase::autoReportInput("norspisDispatch")
-        #     ),
-        #     shiny::mainPanel(
-        #       rapbase::autoReportUI("norspisDispatch")
-        #     )
-        #   )
-        # ),
-
-        shiny::tabPanel(
-          "Bruksstatistikk",
-          shiny::sidebarLayout(
-            shiny::sidebarPanel(
-              rapbase::statsInput("norspisStats"),
-              rapbase::statsGuideUI("norspisStats")
-            ),
-            shiny::mainPanel(
-              rapbase::statsUI("norspisStats")
-            )
-          )
-        ),
-
-        shiny::tabPanel(
-          "Eksport",
-          shiny::sidebarLayout(
-            shiny::sidebarPanel(
-              rapbase::exportUCInput("norspisExport")
-            ),
-            shiny::mainPanel(
-              rapbase::exportGuideUI("norspisExport")
-            )
-          )
-        )
       )
     )
   )

@@ -33,14 +33,68 @@ appServer <- function(input, output, session) {
   hospitalName <- shiny::reactive(
     ForlopsOversikt$Kortnavn[match(shiny::req(user$org), ForlopsOversikt$AvdRESH)])
 
-  shiny::observeEvent(user$role(), {
-    if (user$role() != 'SC') {
-      shiny::hideTab("tabs", target = "Verkt\u00f8y")
-      shiny::hideTab("tabs", target = "Datadump")
-    }
+  dataDump_tab_added <- shiny::reactiveVal(FALSE)
+  shiny::observeEvent(shiny:req(user$role()), {
     if (user$role() == 'SC') {
-      shiny::showTab("tabs", target = "Verkt\u00f8y")
-      shiny::showTab("tabs", target = "Datadump")
+      shiny::insertTab(
+        inputId = "tabs",
+        tab = shiny::tabPanel(
+          title = "Datadump",
+          value = "datadump",
+          norspis::datadump_UI(id = "datadump_id")
+        ),
+        target = "indikatorer",
+        position = "after"
+      )
+      dataDump_tab_added(TRUE)
+    } else {
+      shiny::removeTab(inputId = "tabs", target = "datadump")
+      dataDump_tab_added(FALSE)
+    }
+  })
+
+  tool_tabs_added <- shiny::reactiveVal(FALSE)
+  shiny::observeEvent(shiny::req(user$role()), {
+    if (user$role() == "SC") {
+      if (!tool_tabs_added()) {
+        shiny::appendTab(
+          inputId = "tabs",
+          tab = shiny::navbarMenu(
+            "Verktøy",
+            shiny::tabPanel(
+              "Bruksstatistikk",
+              shiny::sidebarLayout(
+                shiny::sidebarPanel(
+                  rapbase::statsInput("norspisStats"),
+                  rapbase::statsGuideUI("norspisStats")
+                ),
+                shiny::mainPanel(
+                  rapbase::statsUI("norspisStats")
+                )
+              )
+            ),
+            shiny::tabPanel(
+              "Eksport",
+              shiny::sidebarLayout(
+                shiny::sidebarPanel(
+                  rapbase::exportUCInput("norspisExport")
+                ),
+                shiny::mainPanel(
+                  rapbase::exportGuideUI("norspisExport")
+                )
+              )
+            )
+          )
+        )
+      }
+      tool_tabs_added(TRUE)
+    } else {
+      if (tool_tabs_added()) {
+        shiny::removeTab(inputId = "tabs", target = "Bruksstatistikk")
+        shiny::removeTab(inputId = "tabs", target = "Eksport")
+        shiny::removeTab(inputId = "tabs", target = "Verktøy")
+      }
+      tool_tabs_added(FALSE)
     }
   })
 
