@@ -25,7 +25,7 @@ Imports:
     lubridate,
     magrittr,
     shiny,
-    rapbase,
+    rapbase (>= 3.6.0),
     rapFigurer,
     rlang,
     janitor,
