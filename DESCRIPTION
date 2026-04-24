@@ -31,7 +31,7 @@ Imports:
     janitor,
     shinyjs
 Remotes:
-    Rapporteket/rapbase@main,
+    Rapporteket/rapbase,
     Rapporteket/rapFigurer
 Suggests: 
     covr,
