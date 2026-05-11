@@ -25,13 +25,13 @@ Imports:
     lubridate,
     magrittr,
     shiny,
-    rapbase,
+    rapbase (>= 3.6.0),
     rapFigurer,
     rlang,
     janitor,
     shinyjs
 Remotes:
-    Rapporteket/rapbase@main,
+    Rapporteket/rapbase,
     Rapporteket/rapFigurer
 Suggests: 
     covr,
