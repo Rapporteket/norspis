@@ -34,7 +34,7 @@ appServer <- function(input, output, session) {
     ForlopsOversikt$Kortnavn[match(shiny::req(user$org), ForlopsOversikt$AvdRESH)])
 
   dataDump_tab_added <- shiny::reactiveVal(FALSE)
-  shiny::observeEvent(shiny:req(user$role()), {
+  shiny::observeEvent(shiny::req(user$role()), {
     if (user$role() == 'SC') {
       shiny::insertTab(
         inputId = "tabs",
@@ -86,15 +86,13 @@ appServer <- function(input, output, session) {
             )
           )
         )
+        tool_tabs_added(TRUE)
       }
-      tool_tabs_added(TRUE)
     } else {
       if (tool_tabs_added()) {
-        shiny::removeTab(inputId = "tabs", target = "Bruksstatistikk")
-        shiny::removeTab(inputId = "tabs", target = "Eksport")
         shiny::removeTab(inputId = "tabs", target = "Verktøy")
+        tool_tabs_added(FALSE)
       }
-      tool_tabs_added(FALSE)
     }
   })
 
