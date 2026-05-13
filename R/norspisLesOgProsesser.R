@@ -45,7 +45,8 @@ norspisLesOgProsesser <- function() {
     ForlopsOversikt[, c("AvdRESH", "AvdBUV", "ForlopsID",
                         "Kortnavn", "ForlopsType1Num",
                         "ForlopsType1", "BasisRegStatus",
-                        "PasientAlder", "Fodselsdato")],
+                        "PasientAlder", "Fodselsdato",
+                        "Over18")],
     by = "ForlopsID") |>
     dplyr::filter(BasisRegStatus == 1) |>
     merge(AlleScorer, by = "ForlopsID")
