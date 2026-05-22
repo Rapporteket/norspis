@@ -11,7 +11,8 @@ norspisLesOgProsesser <- function() {
   AlleScorer <- norspis::queryAlleScorer("data")
   EnkeltLeddNum <- norspis::queryEnkeltLeddNum("data")
   ForlopsOversikt <- norspis::queryForlopsOversikt("data")  |>
-    dplyr::mutate(AvdRESH = as.numeric(AvdRESH)) |>
+    dplyr::mutate(AvdRESH = as.numeric(AvdRESH),
+                  PasientAlder = as.numeric(PasientAlder)) |>
     dplyr::mutate(AvdRESH = min(AvdRESH), .by = SykehusNavn) |>
     dplyr::mutate(
       AvdBUV = dplyr::case_when(
