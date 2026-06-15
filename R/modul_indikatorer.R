@@ -14,38 +14,62 @@ indikatorfig_UI <- function(id){
       selectInput(
         inputId = ns("valgtVar"), label = "Velg indikator",
         choices =
-          c("Symptomreduksjon EDEQ, voksne" = "norspis_KI1_symptomreduksjon_EDEQ_V",
-            "Symptomreduksjon EDEQ, barn/ungdom" = "norspis_KI1_symptomreduksjon_EDEQ_BU",
-            "Bedring i livskvalitet, voksne" = "norspis_KI2_funksjonsbedring_CIA_V",
-            "Bedring i livskvalitet, barn/ungdom" = "norspis_KI2_funksjonsbedring_CIA_BU",
-            "Endring i undervektsstatus, voksne" = "norspis_KI3_undervektsreduksjon_V",
-            "Endring i undervektsstatus, barn/ungdom" = "norspis_KI3_undervektsreduksjon_BU",
-            "Utfallsvurdering, voksne" = "norspis_KI4_utfallsvurdering_V",
-            "Utfallsvurdering, barn/ungdom" = "norspis_KI4_utfallsvurdering_BU",
-            "Familie/venner involvert i behandlingen, voksne" = "norspis_involvering_familie_venner_V",
-            "Familie/venner involvert i behandlingen, barn/ungdom" = "norspis_involvering_familie_venner_BU",
-            "Blodprøver ved start, undervektige, voksne" = "norspis_undervekt_blodprove_V",
-            "Blodprøver ved start, undervektige, barn/ungdom" = "norspis_undervekt_blodprove_BU",
-            "Blodprøver ved start, oppkast, voksne" = "norspis_oppkast_blodprove_V",
-            "Blodprøver ved start, oppkast, barn/ungdom" = "norspis_oppkast_blodprove_BU",
-            "Beintetthetsmåling ved start, undervektige voksne" = "norspis_beintetthetsmaling_V",
-            "Beintetthetsmåling ved start, undervektige barn/ungdom" = "norspis_beintetthetsmaling_BU"
+          c("Symptomreduksjon EDEQ, voksne" =
+              "norspis_KI1_symptomreduksjon_EDEQ_V",
+            "Symptomreduksjon EDEQ, barn/ungdom" =
+              "norspis_KI1_symptomreduksjon_EDEQ_BU",
+            "Bedring i livskvalitet, voksne" =
+              "norspis_KI2_funksjonsbedring_CIA_V",
+            "Bedring i livskvalitet, barn/ungdom" =
+              "norspis_KI2_funksjonsbedring_CIA_BU",
+            "Endring i undervektsstatus, voksne" =
+              "norspis_KI3_undervektsreduksjon_V",
+            "Endring i undervektsstatus, barn/ungdom" =
+              "norspis_KI3_undervektsreduksjon_BU",
+            "Utfallsvurdering, voksne" =
+              "norspis_KI4_utfallsvurdering_V",
+            "Utfallsvurdering, barn/ungdom" =
+              "norspis_KI4_utfallsvurdering_BU",
+            "Familie/venner involvert i behandlingen, voksne" =
+              "norspis_involvering_familie_venner_V",
+            "Familie/venner involvert i behandlingen, barn/ungdom" =
+              "norspis_involvering_familie_venner_BU",
+            "Blodprøver ved start, undervektige, voksne" =
+              "norspis_undervekt_blodprove_V",
+            "Blodprøver ved start, undervektige, barn/ungdom" =
+              "norspis_undervekt_blodprove_BU",
+            "Blodprøver ved start, oppkast, voksne" =
+              "norspis_oppkast_blodprove_V",
+            "Blodprøver ved start, oppkast, barn/ungdom" =
+              "norspis_oppkast_blodprove_BU",
+            "Beintetthetsmåling ved start, undervektige voksne" =
+              "norspis_beintetthetsmaling_V",
+            "Beintetthetsmåling ved start, undervektige barn/ungdom" =
+              "norspis_beintetthetsmaling_BU"
           )
       ),
       uiOutput(outputId = ns('tilAar_ui')),
-      selectInput(inputId = ns("bildeformat"), label = "Velg bildeformat",
-                  choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
+      selectInput(inputId = ns("bildeformat"),
+                  label = "Velg bildeformat",
+                  choices = c('pdf', 'png', 'jpg',
+                              'bmp', 'tif', 'svg')),
+      selectInput(inputId = ns("dognpol"),
+                  label = "Velg type avdeling",
+                  choices = c('Dagtilbud', 'Døgnenhet',
+                              'Kombinasjon', 'Poliklinisk'),
+                  multiple = TRUE),
       tags$hr(),
       actionButton(ns("reset_input"), "Nullstill valg")
     ),
     mainPanel(
-      tabsetPanel(id = ns("tab"),
-                  tabPanel("Figur", value = "fig",
-                           plotOutput(ns("Figur1"), height="auto"),
-                           downloadButton(ns("lastNedBilde"), "Last ned figur")),
-                  tabPanel("Tabell", value = "tab",
-                           DT::DTOutput(ns("tabell"))
-                  )
+      tabsetPanel(
+        id = ns("tab"),
+        tabPanel("Figur", value = "fig",
+                 plotOutput(ns("Figur1"), height="auto"),
+                 downloadButton(ns("lastNedBilde"), "Last ned figur")),
+        tabPanel("Tabell", value = "tab",
+                 DT::DTOutput(ns("tabell"))
+        )
       )
     )
   )
@@ -58,7 +82,8 @@ indikatorfig_UI <- function(id){
 #'
 #' @export
 #'
-indikatorfigServer <- function(id, RegData, userRole, hvd_session){
+indikatorfigServer <- function(id, RegData,
+                               userRole, hvd_session){
   moduleServer(
     id,
 
@@ -70,18 +95,24 @@ indikatorfigServer <- function(id, RegData, userRole, hvd_session){
 
       output$tilAar_ui <- renderUI({
         ns <- session$ns
-        selectInput(inputId = ns("tilAar"), label = "T.o.m. år",
-                    choices = rev((min(RegData$StartAar)+2):max(RegData$StartAar)))
+        selectInput(
+          inputId = ns("tilAar"), label = "T.o.m. år",
+          choices = rev((min(RegData$StartAar)+2):max(RegData$StartAar)))
       })
 
 
       tabellReager <- reactive({
-        indikatordata <- norspis::norspisBeregnIndikator(RegData = RegData,
-                                                         ind_id = input$valgtVar)
+        if (!is.null(input$dognpol) ) {
+          RegData = RegData |> dplyr::filter(DognPol %in% input$dognpol)
+        }
+        indikatordata <- norspis::norspisBeregnIndikator(
+          RegData = RegData,
+          ind_id = input$valgtVar)
         TabellData <- indikatordata$indikator |>
           dplyr::filter(year <= as.numeric(req(input$tilAar)),
-                        )
-        TabellData <- TabellData[which(TabellData$year <= as.numeric(req(input$tilAar))), ]
+          )
+        TabellData <- TabellData[which(TabellData$year <=
+                                         as.numeric(req(input$tilAar))), ]
         indikatordata$indikator <- TabellData
         indikatordata
       })
