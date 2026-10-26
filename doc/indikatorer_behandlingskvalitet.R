@@ -9,7 +9,7 @@ RegData <- norspisdata$RegData
 ForlopsOversikt <- norspisdata$ForlopsOversikt
 SkjemaOversikt <- norspisdata$SkjemaOversikt
 
-tabfolder <- "C:/regdata/norspis/indikator_behkvalitet/"
+tabfolder <- "C:/Users/kth200/regdata/norspis/indikator_behkvalitet/"
 if (!dir.exists(tabfolder)) {
   dir.create(tabfolder)
 }
@@ -49,44 +49,64 @@ ind_id <- c("Symptomreduksjon EDEQ, voksne" =
 
 
 
-indikatordata <- norspis::norspisBeregnIndikator(RegData = RegData,
-                                                 ind_id = ind_id[1])
+indikatordata <- norspis::norspisBeregnIndikator(
+  RegData = RegData,
+  ind_id = ind_id[1])
 TabellData <- indikatordata$indikator
-Indikator <- TabellData[which(TabellData$year <= rap_aar), ]
+Indikator <- TabellData
 
 for (i in 2:length(ind_id)) {
-  indikatordata <- norspis::norspisBeregnIndikator(RegData = RegData,
-                                                   ind_id = ind_id[i])
+  indikatordata <- norspis::norspisBeregnIndikator(
+    RegData = RegData,
+    ind_id = ind_id[i])
   TabellData <- indikatordata$indikator
-  Indikator <- dplyr::bind_rows(Indikator, TabellData[which(TabellData$year <= rap_aar), ])
+  Indikator <- dplyr::bind_rows(
+    Indikator, TabellData)
 }
+Indikator <- Indikator |>
+  dplyr::filter(year <= rap_aar,
+                year > 2020)
 
-map_resh_orgnr <- read.csv2("C:/regdata/norspis/map_resh_orgnr2025.csv")
+
+map_resh_orgnr <- readxl::read_xlsx(
+  "C:/Users/kth200/regdata/norspis/indikator_behkvalitet/map_resh_orgnr2025.xlsx")
 Indikator <- merge(Indikator, map_resh_orgnr[, c("UnitId", "orgnr")],
-                   by.x = "AvdRESH", by.y = "UnitId") %>%
+                   by.x = "AvdRESH", by.y = "UnitId", all.x = T) |>
   dplyr::select(orgnr, year, var, denominator, ind_id, context)
 
-DG_ny2025 <- readxl::read_xls(
-  "C:/regdata/norspis/indikator_behkvalitet/NORSPIS - DG til sykehusveiviseren 2023 og 2024 v2.xls",
-  sheet = 1) |>
-  dplyr::rename(orgnr_reg = orgnr) |>
-  merge(map_resh_orgnr[, c("UnitId", "orgnr")],
-        by.x = "ReshID", by.y = "UnitId") |>
-  dplyr::mutate(context = "caregiver",
-                ind_id = "norspis_dg") |>
-  dplyr::rename(var = Teller,
-                denominator = Nevner) |>
-  dplyr::select(orgnr, year, var, denominator, ind_id, context) |>
-  dplyr::bind_rows(
-    data.frame(orgnr = c(1,1), year = c(2023, 2024), var = c(0, 0),
-               denominator = c(3092-785, 2778-794),
-               ind_id = c("norspis_dg", "norspis_dg"), context = "caregiver")
-  )
+write.csv2(Indikator,
+           paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
+           row.names = F)
 
-write.csv2(
-  DG_ny2025,
-  "C:/regdata/norspis/indikator_behkvalitet/norspis_dg2023_2024.csv",
-  row.names = F)
+
+# map_resh_orgnr <- read.csv2(
+#   "C:/Users/kth200/regdata/norspis/indikator_behkvalitet/map_resh_orgnr2025.csv")
+# Indikator <- merge(Indikator, map_resh_orgnr[, c("UnitId", "orgnr")],
+#                    by.x = "AvdRESH", by.y = "UnitId", all.x = T) |>
+#   dplyr::select(orgnr, year, var, denominator, ind_id, context) #|>
+#   # dplyr::filter(is.na(orgnr))
+#
+# DG_ny2025 <- readxl::read_xls(
+#   "C:/regdata/norspis/indikator_behkvalitet/NORSPIS - DG til sykehusveiviseren 2023 og 2024 v2.xls",
+#   sheet = 1) |>
+#   dplyr::rename(orgnr_reg = orgnr) |>
+#   merge(map_resh_orgnr[, c("UnitId", "orgnr")],
+#         by.x = "ReshID", by.y = "UnitId") |>
+#   dplyr::mutate(context = "caregiver",
+#                 ind_id = "norspis_dg") |>
+#   dplyr::rename(var = Teller,
+#                 denominator = Nevner) |>
+#   dplyr::select(orgnr, year, var, denominator, ind_id, context) |>
+#   dplyr::bind_rows(
+#     data.frame(orgnr = c(1,1), year = c(2023, 2024), var = c(0, 0),
+#                denominator = c(3092-785, 2778-794),
+#                ind_id = c("norspis_dg", "norspis_dg"), context = "caregiver")
+#   )
+#
+# write.csv2(
+#   DG_ny2025,
+#   "C:/regdata/norspis/indikator_behkvalitet/norspis_dg2023_2024.csv",
+#   row.names = F)
 
 # Indikator <- merge(Indikator, norspis::resh_voksen_barn[, c("AvdRESH", "orgnr")], by = "AvdRESH") %>%
 #   dplyr::select(orgnr, year, var, denominator, ind_id, context)
@@ -115,8 +135,8 @@ write.csv2(
 #
 # Indikator <- dplyr::bind_rows(Indikator, DG2024)
 #
-write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
-           row.names = F)
+# write.csv2(Indikator, paste0(tabfolder, "indikatorer_norspis_", Sys.Date(), ".csv"),
+#            row.names = F)
 
 
 
