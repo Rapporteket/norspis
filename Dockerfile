@@ -10,7 +10,7 @@ RUN --mount=type=secret,id=github_pat,env=GITHUB_PAT \
 
 EXPOSE 3838
 
-RUN useradd --uid 1000 rapporteket && \
+RUN  adduser --uid 1000 --disabled-password rapporteket && \
     chown -R 1000:1000 /app/R && \
     chmod -R 755 /app/R
 USER 1000
