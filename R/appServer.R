@@ -53,49 +53,6 @@ appServer <- function(input, output, session) {
     }
   })
 
-  # tool_tabs_added <- shiny::reactiveVal(FALSE)
-  # shiny::observeEvent(shiny::req(user$role()), {
-  #   if (user$role() == "SC") {
-  #     if (!tool_tabs_added()) {
-  #       shiny::appendTab(
-  #         inputId = "norspis_app_id",
-  #         tab = shiny::navbarMenu(
-  #           "Verktøy",
-  #           shiny::tabPanel(
-  #             "Bruksstatistikk",
-  #             shiny::sidebarLayout(
-  #               shiny::sidebarPanel(
-  #                 rapbase::statsInput("norspisStats"),
-  #                 rapbase::statsGuideUI("norspisStats")
-  #               ),
-  #               shiny::mainPanel(
-  #                 rapbase::statsUI("norspisStats")
-  #               )
-  #             )
-  #           ),
-  #           shiny::tabPanel(
-  #             "Eksport",
-  #             shiny::sidebarLayout(
-  #               shiny::sidebarPanel(
-  #                 rapbase::exportUCInput("norspisExport")
-  #               ),
-  #               shiny::mainPanel(
-  #                 rapbase::exportGuideUI("norspisExport")
-  #               )
-  #             )
-  #           )
-  #         )
-  #       )
-  #       tool_tabs_added(TRUE)
-  #     }
-  #   } else {
-  #     if (tool_tabs_added()) {
-  #       shiny::removeTab(inputId = "norspis_app_id", target = "Verktøy")
-  #       tool_tabs_added(FALSE)
-  #     }
-  #   }
-  # })
-
   # Legg til verktøy-fanen for SC-brukere, og fjern den for andre roller
   tool_tabs_added <- shiny::reactiveVal(FALSE)
 
