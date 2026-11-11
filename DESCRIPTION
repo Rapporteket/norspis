@@ -1,6 +1,6 @@
 Package: norspis
 Title: NorSpis at Rapporteket
-Version: 1.2.2
+Version: 1.2.3
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
