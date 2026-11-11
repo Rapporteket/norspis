@@ -12,7 +12,7 @@ appUi <- function() {
       title = rapbase::regTitle(regTitle),
       windowTitle = regTitle,
       theme = rapbase::rapTheme(),
-      id = "tabs",
+      id = "norspis_app_id",
 
       shiny::tabPanel(
         "Start",

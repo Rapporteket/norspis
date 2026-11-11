@@ -16,4 +16,3 @@ RUN adduser --uid 1000 --disabled-password rapporteket && \
 USER 1000
 
 CMD ["R", "-e", "options(shiny.port = 3838, shiny.host = \"0.0.0.0\"); norspis::norspisApp()"]
-

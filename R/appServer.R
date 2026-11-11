@@ -37,7 +37,7 @@ appServer <- function(input, output, session) {
   shiny::observeEvent(shiny::req(user$role()), {
     if (user$role() == 'SC') {
       shiny::insertTab(
-        inputId = "tabs",
+        inputId = "norspis_app_id",
         tab = shiny::tabPanel(
           title = "Datadump",
           value = "datadump",
@@ -48,28 +48,42 @@ appServer <- function(input, output, session) {
       )
       dataDump_tab_added(TRUE)
     } else {
-      shiny::removeTab(inputId = "tabs", target = "datadump")
+      shiny::removeTab(inputId = "norspis_app_id", target = "datadump")
       dataDump_tab_added(FALSE)
     }
   })
 
+  # Legg til verktøy-fanen for SC-brukere, og fjern den for andre roller
   tool_tabs_added <- shiny::reactiveVal(FALSE)
+
   shiny::observeEvent(shiny::req(user$role()), {
     if (user$role() == "SC") {
       if (!tool_tabs_added()) {
+        message("Adding Verktøy-tab for user with role ", user$role())
         shiny::appendTab(
-          inputId = "tabs",
+          inputId = "norspis_app_id",
           tab = shiny::navbarMenu(
             "Verktøy",
+            # shiny::tabPanel(
+            #   "Utsending",
+            #   shiny::sidebarLayout(
+            #     shiny::sidebarPanel(
+            #       rapbase::autoReportFormatInput("norspisDispatch"),
+            #       rapbase::autoReportOrgInput("norspisDispatch"),
+            #       rapbase::autoReportInput("norspisDispatch")
+            #     ),
+            #     shiny::mainPanel(
+            #       rapbase::autoReportUI("norspisDispatch")
+            #     )
+            #   )
+            # ),
             shiny::tabPanel(
-              "Bruksstatistikk",
+              "Metadata",
               shiny::sidebarLayout(
-                shiny::sidebarPanel(
-                  rapbase::statsInput("norspisStats"),
-                  rapbase::statsGuideUI("norspisStats")
-                ),
+                shiny::sidebarPanel(shiny::uiOutput("metaControl")),
                 shiny::mainPanel(
-                  rapbase::statsUI("norspisStats")
+                  shiny::uiOutput("n_lines"),
+                  shiny::htmlOutput("metaData")
                 )
               )
             ),
@@ -80,7 +94,19 @@ appServer <- function(input, output, session) {
                   rapbase::exportUCInput("norspisExport")
                 ),
                 shiny::mainPanel(
-                  rapbase::exportGuideUI("norspisExport")
+                  rapbase::exportGuideUI("norspisExportGuide")
+                )
+              )
+            ),
+            shiny::tabPanel(
+              "Bruksstatistikk",
+              shiny::sidebarLayout(
+                shiny::sidebarPanel(
+                  rapbase::statsInput("norspisStats"),
+                  rapbase::statsGuideUI("norspisStatsGuide")
+                ),
+                shiny::mainPanel(
+                  rapbase::statsUI("norspisStats")
                 )
               )
             )
@@ -90,7 +116,8 @@ appServer <- function(input, output, session) {
       }
     } else {
       if (tool_tabs_added()) {
-        shiny::removeTab(inputId = "tabs", target = "Verktøy")
+        message("Removing Verktøy-tab for user with role ", user$role())
+        shiny::removeTab("norspis_app_id", target = "Verktøy")
         tool_tabs_added(FALSE)
       }
     }
@@ -147,49 +174,69 @@ appServer <- function(input, output, session) {
     }
   )
 
+  ## Metadata
+  meta <- shiny::reactive({
+    rapbase::describeRegistryDb("data")
+  })
 
-#
-#   # dummy report and orgs to subscribe and dispatch
-#   orgs <- list(
-#     TestOrg = 999999
-#   )
-#   report <- list(
-#     Veiledning = list(
-#       synopsis = "Testrapport kun for illustrasjon",
-#       fun = "reportProcessor",
-#       paramNames = c("report", "outputFormat", "title"),
-#       paramValues = c("veiledning", "pdf", "Testrapport")
-#     ),
-#     Eksempelrapport = list(
-#       synopsis = "Eksempelrapport med data fra NorSpis",
-#       fun = "reportProcessor",
-#       paramNames = c("report", "outputFormat", "title"),
-#       paramValues = c("eksSamlerapport", "pdf", "Eksempelrapport")
-#     )
-#   )
-#
-#   # subscribe
-#   rapbase::autoReportServer(
-#     "norspisSubscription", registryName = registryName, type = "subscription",
-#     reports = report, orgs = orgs
-#   )
-#
-#   # dispatch
-#   org <- rapbase::autoReportOrgServer("norspisDispatchOrg", orgs)
-#   fileFormat <- rapbase::autoReportFormatServer("norspisDispatchFormat")
-#   paramNames <- shiny::reactive(c("outputFormat"))
-#   paramValues <- shiny::reactive(c(fileFormat()))
-#   rapbase::autoReportServer(
-#     "norspisDispatch", registryName = registryName, type = "dispatchment",
-#     org = org$value,
-#     paramNames = paramNames, paramValues = paramValues, reports = report,
-#     orgs = orgs
-#   )
+  output$metaControl <- shiny::renderUI({
+    tabs <- names(meta())
+    selectInput("metaTab", "Velg tabell:", tabs)
+  })
 
-  # use stats
-  rapbase::statsServer("norspisStats", registryName = registryName, app_id = Sys.getenv("FALK_APP_ID"))
 
-  # export
-  rapbase::exportGuideServer("norspisExport", registryName)
-  rapbase::exportUCServer("norspisExport", registryName)
+  output$metaDataTable <- DT::renderDataTable(
+    meta()[[input$metaTab]],
+    rownames = FALSE,
+    options = list(lengthMenu = c(25, 50, 100, 200, 400))
+  )
+
+  output$metaData <- shiny::renderUI({
+    DT::dataTableOutput("metaDataTable")
+  })
+
+  output$n_lines <- shiny::renderUI({
+    shiny::h4(paste0(
+      input$metaTab,
+      " har ",
+      rapbase::nlinesRegistryDb(
+        registryName = "data",
+        tab = shiny::req(input$metaTab)
+      ),
+      " linjer"
+    )
+    )
+  })
+
+  ## Stats
+  observe(
+    rapbase::statsServer("norspisStats",
+                         registryName = "norspis",
+                         app_id = Sys.getenv("FALK_APP_ID"),
+                         eligible = (user$role() == "SC")
+    )
+  )
+  rapbase::statsGuideServer("norspisStatsGuide",
+                            registryName = "norspis")
+
+
+  ##############################################################################
+  # Eksport  ###################################################################
+  ##############################################################################
+
+  ## brukerkontroller
+  rapbase::exportUCServer(
+    "norspisExport",
+    dbName = "data",
+    teamName = "norspis"
+  )
+  ## veiledning
+  rapbase::exportGuideServer("norspisExportGuide", dbName = "data")
+
+  # # use stats
+  # rapbase::statsServer("norspisStats", registryName = registryName, app_id = Sys.getenv("FALK_APP_ID"))
+  #
+  # # export
+  # rapbase::exportGuideServer("norspisExport", registryName)
+  # rapbase::exportUCServer("norspisExport", registryName)
 }
